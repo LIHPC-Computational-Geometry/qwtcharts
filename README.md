@@ -1,0 +1,2 @@
+# qwtcharts
+QWT charts library
