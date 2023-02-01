@@ -1,2 +1,2 @@
 # qwtcharts
-QWT charts library
+[QWT](https://qwt.sourceforge.io/) charts library.
