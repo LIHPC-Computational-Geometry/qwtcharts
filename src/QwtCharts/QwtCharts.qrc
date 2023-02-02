@@ -1,0 +1,26 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>images/arrow.png</file>
+     <file>images/autoscale.png</file>
+     <file>images/palette.png</file>
+     <file>images/print.png</file>
+     <file>images/rubberband.png</file>
+     <file>images/sel_mode.png</file>
+     <file>images/sel_mode_curve.png</file>
+     <file>images/sel_mode_interval.png</file>
+     <file>images/sel_mode_linear_interpolation.png</file>
+     <file>images/sel_mode_point.png</file>
+     <file>images/zoom.png</file>
+     <file>images/undozoom.png</file>
+     <file>images/redozoom.png</file>
+     <file>images/zoomin.png</file>
+     <file>images/zoomout.png</file>
+
+     <file>images/dash_dot_dot_line.png</file>
+     <file>images/dash_dot_line.png</file>
+     <file>images/dash_line.png</file>
+     <file>images/dot_line.png</file>
+     <file>images/empty_line.png</file>
+     <file>images/solid_line.png</file>
+ </qresource>
+ </RCC>
