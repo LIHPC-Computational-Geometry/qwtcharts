@@ -4,7 +4,9 @@
       {
         "name": "ci",
         "cacheVariables": {
-          "CMAKE_PREFIX_PATH": "$env{INSTALL_DIR}/tkutil;$env{INSTALL_DIR}/qtutil;/containerws/src/qwt-6.1.5"
+          "TkUtil_ROOT": "$env{INSTALL_DIR}/tkutil",
+          "QtUtil_ROOT": "$env{INSTALL_DIR}/qtutil",
+          "qwt_ROOT": "/containerws/src/qwt-6.1.5"
         }
       }
     ]
