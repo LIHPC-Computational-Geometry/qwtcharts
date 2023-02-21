@@ -1,0 +1,15 @@
+name: Cmake CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  call:
+    name: Call Cmake reusable workflow
+    uses: LIHPC-Computational-Geometry/lihpccg-ci/.github/workflows/cmake-reusable.yml@main
+    with:
+      run-tests: false
