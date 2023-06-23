@@ -1,10 +1,12 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
-Version 5.2.0 : 21/06/23
+Version 5.2.0 : 23/06/23
 ===============
 
 Sortie du projet GUIToolkits.
+
+Les includes (FindQwt.cmake) sont remplacés par des find_package/dependency (Qwt)
 
 
 Version 5.1.1 : 06/06/23

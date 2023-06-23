@@ -1,9 +1,9 @@
 include(CMakeFindDependencyMacro)
 find_dependency (GUIToolkitsVariables)
 find_dependency (QtUtil)
+find_dependency (Qwt)
 
 @PACKAGE_INIT@
-include (${GUIToolkitsVariables_CMAKE_DIR}/FindQwt.cmake)
 
 
 set (QwtCharts_VERSION @QWT_CHARTS_VERSION@)

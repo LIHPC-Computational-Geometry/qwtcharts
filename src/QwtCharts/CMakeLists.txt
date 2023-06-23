@@ -2,10 +2,10 @@ set (CURRENT_PACKAGE_NAME "QwtCharts")
 set (CURRENT_PACKAGE_MACRO_NAME "QWT_CHARTS")
 
 find_package (GUIToolkitsVariables)
+find_package (Qwt)	# définit ${QWT_TARGET}
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
-include (${GUIToolkitsVariables_CMAKE_DIR}/FindQwt.cmake)	# définit ${QWT_TARGET}
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 
 find_package (QtUtil 6 REQUIRED)
