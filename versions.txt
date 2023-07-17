@@ -1,10 +1,36 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
+Version 5.2.0 : 23/06/23
+===============
+
+Sortie du projet GUIToolkits.
+
+Les includes (FindQwt.cmake) sont remplacés par des find_package/dependency (Qwt)
+
+
+Version 5.1.1 : 06/06/23
+===============
+
+Retouches cmake (dépendance GUIToolkitsVariables pour accéder à FindQwt.cmake).
+
+
+Version 5.1.0 : 31/03/23
+===============
+
+Portage GitHub environnement podman/spack/tests CI.
+
+
+Version 5.0.0 : 10/01/23
+===============
+
+Intégration au projet GUIToolkits.
+
+
 Version 4.4.13 : 25/11/22
 ================
 
-Un peu de nettoyage (hors sources).
+Suppression répertoire module.
 
 
 Version 4.4.12 : 09/02/22
@@ -22,7 +48,7 @@ Utilisation de NO_DEFAULT_PATH lors des find_package(Qt 5 ...)
 Version 4.4.10 : 10/09/21
 ================
 
-Suppression de mini gros-mots et de balises EXPURGE.
+Divers nettoyage.
 
 
 Version 4.4.9 : 24/08/21
@@ -87,10 +113,7 @@ Version 4.4.0 : 04/06/20 Révisions svn 375/376
 ===============
 
 Fin réintégration en environnement CEA suite confinement covid-19.
-Procédure d'exportation ouverte des sources : cible export avec script export.sh (réalisation d'un tarball filtré,
-sans gros mots, reposant sur la commande expurge réalisée à cet effet et sur la commande tar).
-cmake/workaround.cmake utilise maintenant la commande lsb_release -d à la place du tandem uname/commande locale. A
-finaliser sur calculateur.
+Procédure d'exportation ouverte des sources : cible export avec script export.sh
 
 
 Version 4.3.0 : 06/04/20

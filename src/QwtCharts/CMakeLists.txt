@@ -1,12 +1,18 @@
 set (CURRENT_PACKAGE_NAME "QwtCharts")
 set (CURRENT_PACKAGE_MACRO_NAME "QWT_CHARTS")
 
-include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
-include (${CMAKE_SOURCE_DIR}/cmake/common.cmake)
-include (${CMAKE_SOURCE_DIR}/cmake/FindQwt.cmake)	# définit ${QWT_TARGET}
-include (${CMAKE_SOURCE_DIR}/cmake/workarounds.cmake)
+find_package (GUIToolkitsVariables)
 
-find_package (QtUtil 5 REQUIRED)
+# The FindQwt.cmake file is deployed in GUIToolkitsVariables_CMAKE_DIR
+# that is not the default location => set CMAKE_MODULE_PATH
+list(APPEND CMAKE_MODULE_PATH ${GUIToolkitsVariables_CMAKE_DIR})
+find_package (Qwt REQUIRED)	# définit ${QWT_TARGET}
+
+include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
+
+find_package (QtUtil 6 REQUIRED)
 find_package(Qt5Core 5 NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
 
 file (GLOB HEADERS public/${CURRENT_PACKAGE_NAME}/*.h)
@@ -80,6 +86,3 @@ install (EXPORT ${CMAKE_PACKAGE_TARGETS_NAME}
 # Copie des fichiers QwtChartsConfig.cmake et QwtChartsConfigVersion.cmake dans prefix/lib/QwtCharts/cmake :
 install (FILES ${CMAKE_PACKAGE_CONFIG_FILE} ${CMAKE_PACKAGE_VERSION_FILE} DESTINATION ${ConfigPackageLocation} PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ)
 
-# On installe également FindQwt.cmake qui met à disposition des utilisateurs
-# le nécessaire pour utiliser (de manière indirecte) Qwt.
-install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindQwt.cmake DESTINATION ${ConfigPackageLocation} PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ)

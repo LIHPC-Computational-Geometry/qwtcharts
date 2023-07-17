@@ -1,8 +1,13 @@
 include(CMakeFindDependencyMacro)
+find_dependency (GUIToolkitsVariables)
 find_dependency (QtUtil)
 
+# The FindQwt.cmake file is deployed in GUIToolkitsVariables_CMAKE_DIR
+# that is not the default location => set CMAKE_MODULE_PATH
+list(APPEND CMAKE_MODULE_PATH ${GUIToolkitsVariables_CMAKE_DIR})
+find_dependency (Qwt)
+
 @PACKAGE_INIT@
-include (${CMAKE_CURRENT_LIST_DIR}/FindQwt.cmake)
 
 
 set (QwtCharts_VERSION @QWT_CHARTS_VERSION@)

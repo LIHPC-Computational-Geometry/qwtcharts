@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 3.12)
 project (QwtCharts CXX)
 
 include (GNUInstallDirs)
+
+find_package (GUIToolkitsVariables)
+
 include (cmake/version.cmake)
-include (cmake/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
 
 
 set (QwtCharts_VERSION ${QWT_CHARTS_VERSION})
