@@ -2,7 +2,11 @@ set (CURRENT_PACKAGE_NAME "QwtCharts")
 set (CURRENT_PACKAGE_MACRO_NAME "QWT_CHARTS")
 
 find_package (GUIToolkitsVariables)
-find_package (Qwt)	# définit ${QWT_TARGET}
+
+# The FindQwt.cmake file is deployed in GUIToolkitsVariables_CMAKE_DIR
+# that is not the default location => set CMAKE_MODULE_PATH
+list(APPEND CMAKE_MODULE_PATH ${GUIToolkitsVariables_CMAKE_DIR})
+find_package (Qwt REQUIRED)	# définit ${QWT_TARGET}
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
