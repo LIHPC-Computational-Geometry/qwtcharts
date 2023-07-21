@@ -4,6 +4,7 @@
       {
         "name": "ci",
         "cacheVariables": {
+          "GUIToolkitsVariables_ROOT": "$env{INSTALL_DIR}/guitoolkitsvariables",
           "TkUtil_ROOT": "$env{INSTALL_DIR}/tkutil",
           "QtUtil_ROOT": "$env{INSTALL_DIR}/qtutil",
           "qwt_ROOT": "/containerws/src/qwt-6.1.5"
