@@ -4,5 +4,5 @@
 
 [QWT](https://qwt.sourceforge.io/) charts library.
 
-This project is part of the [mgx](https://github.com/LIHPC-Computational-Geometry/mgx) ecosystem and conforms to its [CI policy](https://github.com/LIHPC-Computational-Geometry/spack_recipes#ci-and-versioning-policy-of-mgx-ecosystem-projects).
+This project is part of the [magix3d](https://github.com/LIHPC-Computational-Geometry/magix3d) ecosystem and conforms to its [CI policy](https://github.com/LIHPC-Computational-Geometry/spack_recipes#development-in-magix3d-ecosystem-projects).
 
