@@ -19,6 +19,7 @@
 #include <QtUtil/QtUnicodeHelper.h>
 
 #include <QPalette>
+#include <QPainter>
 
 #include <qwt_column_symbol.h>
 #include <qwt_legend.h>
@@ -51,8 +52,7 @@ QwtExtendedMultiBarChart::QwtExtendedMultiBarChart (const QString& title)
 }	// QwtExtendedMultiBarChart::QwtExtendedMultiBarChart
 
 
-QwtExtendedMultiBarChart::QwtExtendedMultiBarChart (
-												const QwtExtendedMultiBarChart&)
+QwtExtendedMultiBarChart::QwtExtendedMultiBarChart (const QwtExtendedMultiBarChart&)
 	: QwtPlotMultiBarChart (""),
 	  _rectangles ( ), _selectedClasses ( ),
 	  _style (QwtExtendedMultiBarChart::STYLE_GROUPED),
@@ -64,8 +64,7 @@ QwtExtendedMultiBarChart::QwtExtendedMultiBarChart (
 }	// QwtExtendedMultiBarChart::QwtExtendedMultiBarChart
 
 
-QwtExtendedMultiBarChart& QwtExtendedMultiBarChart::operator = (
-												const QwtExtendedMultiBarChart&)
+QwtExtendedMultiBarChart& QwtExtendedMultiBarChart::operator = (const QwtExtendedMultiBarChart&)
 {
 	assert (0 && "QwtExtendedMultiBarChart operator = is not allowed.");
 	return *this;
@@ -93,8 +92,7 @@ size_t QwtExtendedMultiBarChart::getClassesNum ( ) const
 }	// QwtExtendedMultiBarChart::getClassesNum
 
 
-void QwtExtendedMultiBarChart::setHistogramStyle (
-								QwtExtendedMultiBarChart::HISTOGRAM_STYLE style)
+void QwtExtendedMultiBarChart::setHistogramStyle (QwtExtendedMultiBarChart::HISTOGRAM_STYLE style)
 {
 	if (style != _style)
 	{
@@ -137,15 +135,13 @@ void QwtExtendedMultiBarChart::displayElementsNum (bool display)
 }	// QwtExtendedMultiBarChart::displayElementsNum
 
 
-QwtExtendedMultiBarChart::POSITION
-							QwtExtendedMultiBarChart::getElementNumPos ( ) const
+QwtExtendedMultiBarChart::POSITION QwtExtendedMultiBarChart::getElementNumPos ( ) const
 {
 	return _elementsNumPos;
 }	// QwtExtendedMultiBarChart::getElementNumPos
 
 
-void QwtExtendedMultiBarChart::setElementNumPos (
-										QwtExtendedMultiBarChart::POSITION pos)
+void QwtExtendedMultiBarChart::setElementNumPos (QwtExtendedMultiBarChart::POSITION pos)
 {
 	if (pos != _elementsNumPos)
 	{
@@ -163,17 +159,13 @@ bool QwtExtendedMultiBarChart::isVisible (size_t index) const
 	if (index > getSeriesNum ( ))
 	{
 		UTF8String	message (charset);
-		message << "QwtExtendedMultiBarChart::isVisible. Index invalide ("
-		        << index << "). Nombre de séries : " << getSeriesNum ( )
-		        << ".";
+		message << "QwtExtendedMultiBarChart::isVisible. Index invalide (" << index << "). Nombre de séries : " << getSeriesNum ( ) << ".";
 		throw Exception (message);
 	}	// if (index > getSeriesNum ( ))
 	if (index > _visibleSeries.size ( ))
 	{
 		UTF8String	message (charset);
-		message << "Erreur interne. Index invalide ("
-		        << index << "). Nombre de séries : " << getSeriesNum ( )
-		        << ".";
+		message << "Erreur interne. Index invalide (" << index << "). Nombre de séries : " << getSeriesNum ( ) << ".";
 		INTERNAL_ERROR (exc, message, "QwtExtendedMultiBarChart::isVisible")
 		throw exc;
 	}	// if (index > _visibleSeries.size ( ))
@@ -187,17 +179,13 @@ void QwtExtendedMultiBarChart::setVisible (size_t index, bool visible)
 	if (index > getSeriesNum ( ))
 	{
 		UTF8String	message (charset);
-		message << "QwtExtendedMultiBarChart::setVisible. Index invalide ("
-		        << index << "). Nombre de séries : " << getSeriesNum ( )
-		        << ".";
+		message << "QwtExtendedMultiBarChart::setVisible. Index invalide ("  << index << "). Nombre de séries : " << getSeriesNum ( ) << ".";
 		throw Exception (message);
 	}	// if (index > getSeriesNum ( ))
 	if (index > _visibleSeries.size ( ))
 	{
 		UTF8String	message (charset);
-		message << "Erreur interne. Index invalide ("
-		        << index << "). Nombre de séries : " << getSeriesNum ( )
-		        << ".";
+		message << "Erreur interne. Index invalide (" << index << "). Nombre de séries : " << getSeriesNum ( ) << ".";
 		INTERNAL_ERROR (exc, message, "QwtExtendedMultiBarChart::setVisible")
 		throw exc;
 	}	// if (index > _visibleSeries.size ( ))
@@ -212,12 +200,9 @@ bool QwtExtendedMultiBarChart::isSelected (size_t s, size_t c) const
 	if ((s >= getSeriesNum ( )) || (c >= getClassesNum ( )))
 	{
 		UTF8String	message (charset);
-		message << "Erreur, classe inexistante (Série : " << s
-			    << ", class : " << c
-			    << ") dans QwtExtendedMultiBarChart::isSelected. "
-			    << "Nombre de séries : " << getSeriesNum ( )
-			    << ", nombre de classes : " << getClassesNum ( )
-			    << ".";
+		message << "Erreur, classe inexistante (Série : " << s << ", class : " << c
+			    << ") dans QwtExtendedMultiBarChart::isSelected. Nombre de séries : " << getSeriesNum ( )
+			    << ", nombre de classes : " << getClassesNum ( ) << ".";
 		throw Exception (message);
 	}	// if ((s >= getSeriesNum ( )) || (c >= getClassesNum ( )))
 
@@ -290,8 +275,7 @@ vector<pair<size_t, size_t> > QwtExtendedMultiBarChart::getSelection ( ) const
 }	// QwtExtendedMultiBarChart::getSelection
 
 
-vector <pair<size_t, size_t> > QwtExtendedMultiBarChart::intersectedClasses (
-															int x, int y) const
+vector <pair<size_t, size_t> > QwtExtendedMultiBarChart::intersectedClasses (int x, int y) const
 {
 	vector <pair<size_t, size_t> >	classes;
 
@@ -313,8 +297,7 @@ vector <pair<size_t, size_t> > QwtExtendedMultiBarChart::intersectedClasses (
 }	// QwtExtendedMultiBarChart::intersectedClasses
 
 
-bool QwtExtendedMultiBarChart::intersects (
-								int x, int y, double& abs, size_t& ord) const
+bool QwtExtendedMultiBarChart::intersects (int x, int y, double& abs, size_t& ord) const
 {
 	const size_t	barsNum		= getClassesNum ( );
 	const size_t	seriesNum	= getSeriesNum ( );
@@ -339,10 +322,7 @@ bool QwtExtendedMultiBarChart::intersects (
 
 
 void QwtExtendedMultiBarChart::drawSample (
-			QPainter* painter,
-			const QwtScaleMap& xMap, const QwtScaleMap& yMap,
-			const QRectF& canvasRect, const QwtInterval& boundingInterval,
-			int index, const QwtSetSample& sample) const
+	QPainter* painter, const QwtScaleMap& xMap, const QwtScaleMap& yMap, const QRectF& canvasRect, const QwtInterval& boundingInterval, int index, const QwtSetSample& sample) const
 {
 //	if ((index < _visibleSeries.size ( )) && (false == _visibleSeries [index]))
 //		return;
@@ -377,9 +357,7 @@ mess << "QwtExtendedMultiBarChart::drawSample, style non supporté ("
 
 
 void QwtExtendedMultiBarChart::drawOverlappedBars (
-			QPainter* painter, const QwtScaleMap& xMap, const QwtScaleMap& yMap,
-			const QRectF& canvasRect, int index, double sampleWidth,
-			const QwtSetSample &sample) const
+	QPainter* painter, const QwtScaleMap& xMap, const QwtScaleMap& yMap, const QRectF& canvasRect, int index, double sampleWidth, const QwtSetSample &sample) const
 {	// CP : Code fortement inspiré de QwtPlotMultiBarChart::drawGroupedBars.
 	const int		numBars		= sample.set.size ( );
 
@@ -388,9 +366,7 @@ void QwtExtendedMultiBarChart::drawOverlappedBars (
 	if (Qt::Horizontal == orientation ( ))
 	{
 		UTF8String	mess (charset);
-		mess << "QwtExtendedMultiBarChart::drawOverlappedBars. Seule "
-		     << "l'orientation verticale est actuellement supportée. Tracé de "
-		     << "l'histogramme selon cette orientation.";
+		mess << "QwtExtendedMultiBarChart::drawOverlappedBars. Seule l'orientation verticale est actuellement supportée. Tracé de l'histogramme selon cette orientation.";
 		ConsoleOutput::cerr ( ) << mess << co_endl;
 	}
 
@@ -423,12 +399,9 @@ void QwtExtendedMultiBarChart::drawOverlappedBars (
 }	// QwtExtendedMultiBarChart::drawOverlappedBars
 
 
-void QwtExtendedMultiBarChart::drawBar (
-						QPainter* painter, int sampleIndex, int barIndex,
-						const QwtColumnRect& rect) const
+void QwtExtendedMultiBarChart::drawBar (QPainter* painter, int sampleIndex, int barIndex, const QwtColumnRect& rect) const
 {
-	if ((barIndex < _visibleSeries.size ( )) &&
-	    (false == _visibleSeries [barIndex]))
+	if ((barIndex < _visibleSeries.size ( )) && (false == _visibleSeries [barIndex]))
 		return;
 
 	assert (0 != painter);
@@ -491,9 +464,7 @@ void QwtExtendedMultiBarChart::drawBar (
 					if (true == first)
 					{
 						UTF8String	mess (charset);
-						mess << "Erreur en " __FILE__ << ' ' << (unsigned long)__LINE__
-						     << " Position non supportée ("
-						     << (unsigned long)getElementNumPos ( ) << ")";
+						mess << "Erreur en " __FILE__ << ' ' << (unsigned long)__LINE__ << " Position non supportée (" << (unsigned long)getElementNumPos ( ) << ")";
 						ConsoleOutput::cerr ( ) << mess << co_endl;
 					}
 					first	= false;
@@ -546,8 +517,7 @@ void QwtExtendedMultiBarChart::dataChanged ( )
 	QwtPlotMultiBarChart::dataChanged ( );
 
 	QwtPlot*		chart	= plot ( );
-	QwtLegend*		legend	= 0 == chart ?
-								0 : dynamic_cast<QwtLegend*>(chart->legend ( ));
+	QwtLegend*		legend	= 0 == chart ? 0 : dynamic_cast<QwtLegend*>(chart->legend ( ));
 	QList<QWidget*>	widgets;
 	if (0 != legend)
 		widgets	= legend->legendWidgets (chart->itemToInfo (this));

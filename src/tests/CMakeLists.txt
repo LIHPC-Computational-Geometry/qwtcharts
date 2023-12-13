@@ -2,9 +2,10 @@ find_package (GUIToolkitsVariables)
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/common_qt.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 
-find_package (Qt5Widgets 5 REQUIRED NO_CMAKE_SYSTEM_PATH)
+find_package (Qt${QT_MAJOR}Widgets ${QT_MAJOR} REQUIRED NO_CMAKE_SYSTEM_PATH)
 
 add_executable (qwt_test QtCurvesMainWindow.cpp curves_app.cpp public/QtCurvesMainWindow.h)	# *.h for automoc ...
 set_property (TARGET qwt_test PROPERTY AUTOMOC ON)

@@ -19,6 +19,7 @@
 #include <QMdiSubWindow>
 #include <QPaintEngine>
 #include <QPainter>
+#include <QStack>
 #include <QWheelEvent>
 
 #include <qwt_plot_multi_barchart.h>
@@ -31,6 +32,7 @@
 #include <qwt_plot_item.h>
 #include <qwt_plot_layout.h>
 #include <qwt_painter.h>
+#include <qwt_text.h>
 
 #include "QwtCharts/QwtExtendedPlot.h"
 
@@ -126,24 +128,20 @@ static void ordExtrema (
 //               LA CLASSE QwtChartPanel::QwtChartEditionPanel
 // ---------------------------------------------------------------------------
 
-QwtChartPanel::QwtChartEditionPanel::QwtChartEditionPanel (
-										QWidget* parent, QwtChartPanel* panel)
+QwtChartPanel::QwtChartEditionPanel::QwtChartEditionPanel (QWidget* parent, QwtChartPanel* panel)
 	: QWidget (parent), _chartPanel (panel)
 {
 }	// QwtChartEditionPanel::QwtChartEditionPanel
 
 
-QwtChartPanel::QwtChartEditionPanel::QwtChartEditionPanel (
-									const QwtChartPanel::QwtChartEditionPanel&)
+QwtChartPanel::QwtChartEditionPanel::QwtChartEditionPanel (const QwtChartPanel::QwtChartEditionPanel&)
 	: QWidget (0), _chartPanel (0)
 {
 	assert (0 && "QwtChartEditionPanel copy constructor is not allowed.");
 }	// QwtChartEditionPanel::QwtChartEditionPanel
 
 
-QwtChartPanel::QwtChartEditionPanel&
-						QwtChartPanel::QwtChartEditionPanel::operator = (
-									const QwtChartPanel::QwtChartEditionPanel&)
+QwtChartPanel::QwtChartEditionPanel& QwtChartPanel::QwtChartEditionPanel::operator = (const QwtChartPanel::QwtChartEditionPanel&)
 {
 	assert (0 && "QwtChartEditionPanel operator = is not allowed.");
 	return *this;
@@ -173,15 +171,13 @@ QwtChartPanel& QwtChartPanel::QwtChartEditionPanel::getChartPanel ( )
 //               LA CLASSE QwtChartPanel::QwtChartSpecificPanelCreator
 // ---------------------------------------------------------------------------
 
-QwtChartPanel::QwtChartSpecificPanelCreator::QwtChartSpecificPanelCreator (
-														QwtChartPanel* panel)
+QwtChartPanel::QwtChartSpecificPanelCreator::QwtChartSpecificPanelCreator (QwtChartPanel* panel)
 	: _chartPanel (panel)
 {
 }	// QwtChartSpecificPanelCreator::QwtChartSpecificPanelCreator
 
 
-QwtChartPanel::QwtChartSpecificPanelCreator::QwtChartSpecificPanelCreator (
-							const QwtChartPanel::QwtChartSpecificPanelCreator&)
+QwtChartPanel::QwtChartSpecificPanelCreator::QwtChartSpecificPanelCreator (const QwtChartPanel::QwtChartSpecificPanelCreator&)
 	: _chartPanel (0)
 {
 	assert (0 && "QwtChartSpecificPanelCreator copy constructor is not allowed.");
@@ -189,24 +185,21 @@ QwtChartPanel::QwtChartSpecificPanelCreator::QwtChartSpecificPanelCreator (
 
 
 QwtChartPanel::QwtChartSpecificPanelCreator&
-				QwtChartPanel::QwtChartSpecificPanelCreator::operator = (
-							const QwtChartPanel::QwtChartSpecificPanelCreator&)
+				QwtChartPanel::QwtChartSpecificPanelCreator::operator = (const QwtChartPanel::QwtChartSpecificPanelCreator&)
 {
 	assert (0 && "QwtChartSpecificPanelCreator operator = is not allowed.");
 	return *this;
 }	// QwtChartSpecificPanelCreator::QwtChartSpecificPanelCreator
 
 
-vector<QwtChartPanel::QwtChartEditionPanel*>
-	QwtChartPanel::QwtChartSpecificPanelCreator::createEditionPanels (QWidget*)
+vector<QwtChartPanel::QwtChartEditionPanel*> QwtChartPanel::QwtChartSpecificPanelCreator::createEditionPanels (QWidget*)
 {
 	vector<QwtChartPanel::QwtChartEditionPanel*>	list;
 	return list;
 }	// QwtChartPanel::QwtChartSpecificPanelCreator::createEditionPanels
 
 
-const QwtChartPanel& QwtChartPanel::QwtChartSpecificPanelCreator::getChartPanel(
-																		) const
+const QwtChartPanel& QwtChartPanel::QwtChartSpecificPanelCreator::getChartPanel( ) const
 {
 	CHECK_NULL_PTR_ERROR (_chartPanel)
 	return *_chartPanel;
@@ -225,8 +218,7 @@ QwtChartPanel& QwtChartPanel::QwtChartSpecificPanelCreator::getChartPanel ( )
 //               LA CLASSE QwtChartPanel::DataPaintAttributes
 // ---------------------------------------------------------------------------
 
-QwtChartPanel::DataPaintAttributes::DataPaintAttributes (
-							QwtPlotItem* plotItem, const PaintAttributes& pen)
+QwtChartPanel::DataPaintAttributes::DataPaintAttributes (QwtPlotItem* plotItem, const PaintAttributes& pen)
 	: _plotItem (plotItem), _name ( ), _pen (pen),
 	  _fgValid (true), _bgValid (true)
 {
@@ -235,16 +227,14 @@ QwtChartPanel::DataPaintAttributes::DataPaintAttributes (
 }	// DataPaintAttributes::DataPaintAttributes
 
 
-QwtChartPanel::DataPaintAttributes::DataPaintAttributes (
-							const string& name, const PaintAttributes& pen)
+QwtChartPanel::DataPaintAttributes::DataPaintAttributes (const string& name, const PaintAttributes& pen)
 	: _plotItem (0), _name (name), _pen (pen),
 	  _fgValid (true), _bgValid (true)
 {
 }	// DataPaintAttributes::DataPaintAttributes
 
 
-QwtChartPanel::DataPaintAttributes::DataPaintAttributes (
-							const QwtChartPanel::DataPaintAttributes& copied)
+QwtChartPanel::DataPaintAttributes::DataPaintAttributes (const QwtChartPanel::DataPaintAttributes& copied)
 	: _plotItem (copied._plotItem), _name (copied._name), _pen (copied._pen),
 	  _fgValid (copied._fgValid), _bgValid (copied._bgValid)
 {
@@ -252,8 +242,7 @@ QwtChartPanel::DataPaintAttributes::DataPaintAttributes (
 
 
 QwtChartPanel::DataPaintAttributes&
-				QwtChartPanel::DataPaintAttributes::operator = (
-							const QwtChartPanel::DataPaintAttributes& copied)
+				QwtChartPanel::DataPaintAttributes::operator = (const QwtChartPanel::DataPaintAttributes& copied)
 {
 	if (&copied != this)
 	{
@@ -273,23 +262,19 @@ QwtChartPanel::DataPaintAttributes&
 //                     LA CLASSE QwtChartPanel::AxisScale
 // ---------------------------------------------------------------------------
 
-QwtChartPanel::AxisScale::AxisScale (
-		double min, double max, bool autoScale, double tickStep, bool updated)
-	: _min (min), _max (max), _auto (autoScale), _updated (updated),
-	  _tickStep (tickStep)
+QwtChartPanel::AxisScale::AxisScale (double min, double max, bool autoScale, double tickStep, bool updated)
+	: _min (min), _max (max), _auto (autoScale), _updated (updated), _tickStep (tickStep)
 {
 }	// AxisScale::AxisScale
 
 
 QwtChartPanel::AxisScale::AxisScale (const QwtChartPanel::AxisScale& as)
-	: _min (as._min), _max (as._max), _auto (as._auto), _updated (as._updated),
-	  _tickStep (as._tickStep)
+	: _min (as._min), _max (as._max), _auto (as._auto), _updated (as._updated), _tickStep (as._tickStep)
 {
 }	// AxisScale::AxisScale (const QwtChartPanel::AxisScale&)
 
 
-QwtChartPanel::AxisScale& QwtChartPanel::AxisScale::operator = (
-										const QwtChartPanel::AxisScale& as)
+QwtChartPanel::AxisScale& QwtChartPanel::AxisScale::operator = (const QwtChartPanel::AxisScale& as)
 {
 	if (&as != this)
 	{
@@ -313,10 +298,8 @@ bool						QwtChartPanel::drawHorMajorLines	= true;
 bool						QwtChartPanel::drawHorMinorLines	= false;
 bool						QwtChartPanel::drawVerMajorLines	= true;
 bool						QwtChartPanel::drawVerMinorLines	= false;
-QwtPlot::LegendPosition		QwtChartPanel::legendPosition		=	
-											QwtPlot::RightLegend;
-QwtLegendData::Mode			QwtChartPanel::legendCheckable	=
-											QwtLegendData::ReadOnly;
+QwtPlot::LegendPosition		QwtChartPanel::legendPosition		= QwtPlot::RightLegend;
+QwtLegendData::Mode			QwtChartPanel::legendCheckable		= QwtLegendData::ReadOnly;
 int							QwtChartPanel::legendCurveWidth		= 3;
 unsigned char				QwtChartPanel::scaleLabelPrecision	= 10;
 char						QwtChartPanel::scaleLabelFormat		= 'g';
@@ -356,15 +339,14 @@ QwtChartPanel::QwtChartPanel (QWidget* parent)
 	_grid->enableY (drawVerMajorLines);		// Lignes horizontales majeures
 	_grid->enableYMin (drawVerMinorLines);	// Lignes horizontales mineures
 	_grid->attach (_plotWidget);
-	
+
 	setBackgroundColor (Qt::white);
 	showLegend (true);
 	_plotWidget->setMinimumSize (300, 200);
 	_plotWidget->setContentsMargins (15, 15, 15, 15);
 	for (int i = QwtPlot::yLeft; i < QwtPlot::axisCnt; i++)
 	{
-		_plotWidget->setAxisScaleDraw (
-			i, new QwtExtendedScaleDraw(scaleLabelPrecision, scaleLabelFormat));
+		_plotWidget->setAxisScaleDraw (i, new QwtExtendedScaleDraw(scaleLabelPrecision, scaleLabelFormat));
 	}	// for (int i = QwtPlot::yLeft; i < QwtPlot::axisCnt; i++)
 
 	mainLayout->addWidget (_plotWidget);
@@ -372,7 +354,7 @@ QwtChartPanel::QwtChartPanel (QWidget* parent)
 
 	_panner	= new QwtPlotPanner (_plotWidget->canvas ( ));
 	CHECK_NULL_PTR_ERROR (_panner)
-	_panner->setMouseButton(Qt::MidButton);
+	_panner->setMouseButton(Qt::MiddleButton);
 	_panner->setCursor (Qt::ClosedHandCursor);
 	_panner->setEnabled (true);
 
@@ -538,10 +520,15 @@ void QwtChartPanel::setBackgroundColor (const QColor& bg)
 {
 	QPalette	p (palette ( ));
 	setAutoFillBackground (true);
+#ifdef QT_5
 	p.setColor (QPalette::Active, QPalette::Background, bg);
 	p.setColor (QPalette::Inactive, QPalette::Background, bg);
 	setPalette (p);
 	getPlot ( ).setCanvasBackground (bg);
+#else	// QT_5
+	QString	backgroundLabel ("background-color:");
+	getPlot ( ).setStyleSheet (backgroundLabel + bg.name ( ));	// => background-color:#RRGGBB
+#endif	// QT_5
 	getPlot ( ).replot ( );
 }	// QwtChartPanel::setBackgroundColor
 
@@ -549,7 +536,11 @@ void QwtChartPanel::setBackgroundColor (const QColor& bg)
 int QwtChartPanel::getMargin ( ) const
 {
 	int	margin	= 0;
+#ifdef QT_5
 	getContentsMargins (&margin, &margin, &margin, &margin);
+#else	// QT_5
+	margin	= contentsMargins ( ).left ( );
+#endif	// QT_5
 	return margin;
 }	// QwtChartPanel::getMargin
 
@@ -946,7 +937,14 @@ int QwtChartPanel::getLegendMargin ( ) const
 
 	int	left	= 0, top	= 0, right	= 0, bottom	= 0;
 	if (0 != layout)
+	{
+#ifdef QT_5
 		layout->getContentsMargins (&left, &top, &right, &bottom);
+#else	// QT_5
+		QMargins	margins	= layout->contentsMargins ( );
+		top	= margins.top ( );	right	= margins.right ( );	bottom	= margins.bottom ( );	left	= margins.left ( );
+#endif	// QT_5
+	}	// if (0 != layout)
 
 	return top;
 }	// QwtChartPanel::getLegendMargin
@@ -1477,8 +1475,11 @@ void QwtChartPanel::zoom (QWheelEvent& event)
 	const bool		enabled	= zoomEnabled ( );
 	enableZoom (true);
 
+#ifdef QT_5
 	zoom (1. + sign * (double)event.delta ( ) / 8. / 100.);
-
+#else	// QT_5
+	zoom (1. + sign * (double)(event.pixelDelta ( ).x ( ) + event.pixelDelta ( ).y ( )) / 8. / 100.);
+#endif	// QT_5
 	event.accept ( );
 	enableZoom (enabled);
 }	// QwtChartPanel::zoom
@@ -1497,7 +1498,7 @@ void QwtChartPanel::zoom (double factor)
 		return;
 
 	// Le rectangle englobant de la future partie visible :
-	QwtDoubleRect	rect	= _zoomer->zoomRect ( );
+	QRectF	rect	= _zoomer->zoomRect ( );
 	const double	width	= rect.width ( );
 	const double	height	= rect.height ( );
 	const double	dx		= (factor - 1.) * width;
@@ -1519,7 +1520,7 @@ void QwtChartPanel::zoom (double factor)
 	const double	yMax	= ordScaleDiv.upperBound ( );
 	const double	x		= xMin + (xMax - xMin) / 2.;
 	const double	y		= yMin + (yMax - yMin) / 2.;
-	rect.moveCenter (QwtDoublePoint (x, y));
+	rect.moveCenter (QPointF (x, y));
 	_zoomer->zoom (rect);
 }	// QwtChartPanel::zoom
 
@@ -1566,8 +1567,8 @@ void QwtChartPanel::adjustScales ( )
 
 	if (true == _rescaler->isEnabled ( ))
 	{
-		QwtDoubleInterval	intervalx (minx, maxx);
-		QwtDoubleInterval	intervaly (miny, maxy);
+		QwtInterval	intervalx (minx, maxx);
+		QwtInterval	intervaly (miny, maxy);
 		_rescaler->setIntervalHint (QwtPlot::xBottom, intervalx);
 		_rescaler->setIntervalHint (QwtPlot::xTop, intervalx);
 		_rescaler->setIntervalHint (QwtPlot::yLeft, intervaly);
@@ -1578,7 +1579,7 @@ void QwtChartPanel::adjustScales ( )
 	{
 		const double	width	= maxx - minx;
 		const double	height	= maxy - miny;
-		QwtDoubleRect	rect (minx, miny, width, height);
+		QRectF	rect (minx, miny, width, height);
 		_zoomer->zoom (rect);
 	}
 }	// QwtChartPanel::adjustScales
@@ -1665,8 +1666,8 @@ void QwtChartPanel::dataModified ( )
 //	_zoomer->setZoomBase ( );
 // Versions 0.23.0 et ultérieures : on recré l'éventuelle pile de zooms. On
 // donne pour rectangle initial les dimensions max du graphique.
-	const QStack<QwtDoubleRect>&	stack	= _zoomer->zoomStack ( );
-	QStack<QwtDoubleRect>			newStack;
+	const QStack<QRectF>&	stack	= _zoomer->zoomStack ( );
+	QStack<QRectF>			newStack;
 	bool	as	= false;
 	double	x1 = 0., x2 = 0., y1 = 0., y2 = 0.;
 	getAbscissaScale (x1, x2, as);
@@ -1674,9 +1675,9 @@ void QwtChartPanel::dataModified ( )
 	// La nouvelle reference (etat non zoome) :
 	if ((0 != isValid (x1)) && (0 != isValid (x2)) &&
 	    (0 != isValid (y1)) && (0 != isValid (y2)))
-		newStack.push (QwtDoubleRect (x1, y1, x2 - x1, y2 - y1));
+		newStack.push (QRectF (x1, y1, x2 - x1, y2 - y1));
 	else
-		newStack.push (QwtDoubleRect (0., 0., 1., 1.));
+		newStack.push (QRectF (0., 0., 1., 1.));
 
 	// On conserve le reste de l'ancienne pile :
 	for (size_t i = 1; i < stack.size ( ); i++)
@@ -1692,11 +1693,11 @@ void QwtChartPanel::adjustChart ( )
 	double	mn	= 0.,	mx	= 0.;
 	bool	as	= false;
 	getAbscissaScale (mn, mx, as);
-	QwtDoubleInterval	interval (mn, mx);
+	QwtInterval	interval (mn, mx);
 	_rescaler->setIntervalHint (QwtPlot::xBottom, interval);
 	_rescaler->setIntervalHint (QwtPlot::xTop, interval);
 	getOrdinateScale (mn, mx, as);
-	interval	= QwtDoubleInterval (mn, mx);
+	interval	= QwtInterval (mn, mx);
 	_rescaler->setIntervalHint (QwtPlot::yLeft, interval);
 	_rescaler->setIntervalHint (QwtPlot::yRight, interval);
 	if (true == _rescaler->isEnabled ( ))
@@ -1723,15 +1724,15 @@ void QwtChartPanel::legendCheckedCallback (
 }	// legendCheckedCallback
 
 
-void QwtChartPanel::zoomCallback_Qwt5 (const QwtDoubleRect& r)
+void QwtChartPanel::zoomCallback_Qwt5 (const QRectF& r)
 {
 	CHECK_NULL_PTR_ERROR (_zoomer)
 	double xmin	= getPlot ( ).axisScaleDiv (QwtPlot::xBottom).lowerBound ( );
 	double xmax	= getPlot ( ).axisScaleDiv (QwtPlot::xBottom).upperBound ( );
 	double ymin	= getPlot ( ).axisScaleDiv (QwtPlot::yLeft).lowerBound ( );
 	double ymax	= getPlot ( ).axisScaleDiv (QwtPlot::yLeft).upperBound ( );
-	QStack<QwtDoubleRect>	stack	= _zoomer->zoomStack ( );
-	QwtDoubleRect&			rect	= stack [_zoomer->zoomRectIndex ( )];
+	QStack<QRectF>	stack	= _zoomer->zoomStack ( );
+	QRectF&			rect	= stack [_zoomer->zoomRectIndex ( )];
 	rect.setRect (xmin, ymin, xmax - xmin, ymax - ymin);
 	_zoomer->setZoomStack (stack, _zoomer->zoomRectIndex ( ));
 	if (0 != _coordsPicker)

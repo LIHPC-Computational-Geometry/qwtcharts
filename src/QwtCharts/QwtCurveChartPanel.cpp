@@ -8,6 +8,7 @@
 #include <TkUtil/MemoryError.h>
 #include <TkUtil/InformationLog.h>
 
+#include <qwt_text.h>
 
 #include <assert.h>
 #include <values.h>

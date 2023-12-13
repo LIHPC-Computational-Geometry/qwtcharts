@@ -12,6 +12,7 @@
 
 // Pour tests alphabet grec :
 #include <QtUtil/QtStringHelper.h>
+#include <qwt_text.h>
 
 using namespace std;
 using namespace TkUtil;

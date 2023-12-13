@@ -8,7 +8,10 @@
 #include <qwt_interval.h>
 #include <qwt_point_3d.h>
 #include <qwt_series_data.h>
+#ifdef QT_5
 #include <qwt_compat.h>
+#endif	// QT_5
+
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -200,7 +203,7 @@ class QwtPlotCurveCoordinatesPicker : public QwtPlotCoordinatesPicker
 	 *				graphique.
 	 * @see			getDisplayMode
 	 */
-	virtual QwtText trackerText (const QwtDoublePoint& pos) const;
+	virtual QwtText trackerText (const QPointF& pos) const;
 
 	/**
 	 * Met à jour la sélection en fonction de ses paramètres et des courbes

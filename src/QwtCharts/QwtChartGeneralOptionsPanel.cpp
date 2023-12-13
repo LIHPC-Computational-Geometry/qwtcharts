@@ -7,6 +7,7 @@
 #include <TkUtil/MemoryError.h>
 
 #include <qwt_plot_layout.h>
+#include <qwt_text.h>
 
 #include <QButtonGroup>
 #include <QColorDialog>
@@ -26,15 +27,10 @@ static const TkUtil::Charset	charset ("àéèùô");
 USE_ENCODING_AUTODETECTION
 
 
-QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
-									QWidget* parent, QwtChartPanel* chartPanel)
+QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (QWidget* parent, QwtChartPanel* chartPanel)
 	: QwtChartPanel::QwtChartEditionPanel (parent, chartPanel),
-	  _chartPanel (chartPanel),
-	  _backgroundColor (Qt::white),
-	  _titleTextField (0), _titleFontPanel (0),
-	  _cartesianButton (0), _polarButton (0),
-	  _marginsTextField (0),
-	  _aspectRatioCheckbox (0), _aspectRatioTextField (0)
+	  _chartPanel (chartPanel), _backgroundColor (Qt::white), _titleTextField (0), _titleFontPanel (0),
+	  _cartesianButton (0), _polarButton (0), _marginsTextField (0), _aspectRatioCheckbox (0), _aspectRatioTextField (0)
 {
 	if (0 != _chartPanel)
 		_backgroundColor	= _chartPanel->getBackgroundColor ( );
@@ -51,19 +47,15 @@ QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
 	vLayout->addLayout (hLayout);
 	QLabel*	label	= new QLabel ("Titre :", group);
 	hLayout->addWidget (label);
-	QString	title	=
-			0 == _chartPanel ? "" : _chartPanel->getPlot ( ).title ( ).text ( );
+	QString	title	= 0 == _chartPanel ? "" : _chartPanel->getPlot ( ).title ( ).text ( );
 	_titleTextField	= new QtTextField (title, group);
 	hLayout->addWidget (_titleTextField);
 	QPushButton*	button	= new QPushButton ("Modifier ...", group);
 	hLayout->addWidget (button);
 	connect (button, SIGNAL (clicked ( )), this, SLOT (editTitleCallback ( )));
-	QFont	font	= 0 == _chartPanel ?
-			QApplication::font( ) : _chartPanel->getPlot ( ).title ( ).font ( );
-	QColor	color	= 0 == _chartPanel ?
-			Qt::black :  _chartPanel->getPlot ( ).title ( ).color ( );
-	_titleFontPanel	=
-		new QtFontPanel (this, font, color, QtFontPanel::HORIZONTAL_PANEL);
+	QFont	font	= 0 == _chartPanel ? QApplication::font( ) : _chartPanel->getPlot ( ).title ( ).font ( );
+	QColor	color	= 0 == _chartPanel ? Qt::black :  _chartPanel->getPlot ( ).title ( ).color ( );
+	_titleFontPanel	= new QtFontPanel (this, font, color, QtFontPanel::HORIZONTAL_PANEL);
 	vLayout->addWidget (_titleFontPanel);
 	vLayout->addStretch (2);
 
@@ -74,21 +66,18 @@ QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
 	hLayout	= new QHBoxLayout ( );
 	group->setLayout (hLayout);
 	mainLayout->addWidget (group);
-	_cartesianButton	=
-					new QRadioButton (QSTR ("Cartésienne"), group);
+	_cartesianButton	= new QRadioButton (QSTR ("Cartésienne"), group);
 	hLayout->addWidget (_cartesianButton);
 	if (QwtChartPanel::CARTESIAN == chartPanel->getDisplayMode ( ))
 		_cartesianButton->setChecked (true);
-	_cartesianButton->setEnabled (
-				chartPanel->isDisplayModeAllowed (QwtChartPanel::CARTESIAN));
+	_cartesianButton->setEnabled (chartPanel->isDisplayModeAllowed (QwtChartPanel::CARTESIAN));
 	buttonGroup->addButton (_cartesianButton);
 	_polarButton	= new QRadioButton ("Polaire", group);
 	buttonGroup->addButton (_polarButton);
 	hLayout->addWidget (_polarButton);
 	if (QwtChartPanel::POLAR == chartPanel->getDisplayMode ( ))
 		_polarButton->setChecked (true);
-	_polarButton->setEnabled (
-				chartPanel->isDisplayModeAllowed (QwtChartPanel::POLAR));
+	_polarButton->setEnabled (chartPanel->isDisplayModeAllowed (QwtChartPanel::POLAR));
 	hLayout->addStretch (200);
 
 	// Fond :
@@ -100,8 +89,7 @@ QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
 	hLayout->addWidget (label);
 	button	= new QPushButton ("Couleur ...", group);
 	hLayout->addWidget (button);
-	connect (button, SIGNAL (clicked ( )), this,
-	         SLOT (backgroundColorCallback ( )));
+	connect (button, SIGNAL (clicked ( )), this, SLOT (backgroundColorCallback ( )));
 	hLayout->addStretch (2);
 
 	// Marges :
@@ -113,7 +101,11 @@ QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
 	hLayout->addWidget (label);
 	int	margin	= 0;
 	if (0 != _chartPanel)
+#ifdef QT_5
 		_chartPanel->getPlot ( ).getContentsMargins (&margin, &margin, &margin, &margin);
+#else	// QT_5
+	margin	= _chartPanel->getPlot ( ).contentsMargins ( ).left ( );
+#endif	// QT_5
 	_marginsTextField	= new QtIntTextField (margin, group);
 	_marginsTextField->setRange (0, 100);
 	_marginsTextField->setVisibleColumns (3);
@@ -124,16 +116,13 @@ QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
 	hLayout		= new QHBoxLayout ( );
 	group->setLayout (hLayout);
 	mainLayout->addWidget (group);
-	_aspectRatioCheckbox	=
-					new QCheckBox ("Utiliser le rapport d'aspect", group);
+	_aspectRatioCheckbox	= new QCheckBox ("Utiliser le rapport d'aspect", group);
 	if (0 != _chartPanel)
 		_aspectRatioCheckbox->setChecked (_chartPanel->useAspectRatio ( ));
 	hLayout->addWidget (_aspectRatioCheckbox);
 	label	= new QLabel ("Rapport d'aspect :", group);
 	hLayout->addWidget (label);
-	_aspectRatioTextField	=
-		new QtDoubleTextField (0 == _chartPanel ?
-		                       1. : _chartPanel->getAspectRatio ( ), group);
+	_aspectRatioTextField	= new QtDoubleTextField (0 == _chartPanel ? 1. : _chartPanel->getAspectRatio ( ), group);
 	_aspectRatioTextField->setRange (1E-6, 1E6);
 	hLayout->addWidget (_aspectRatioTextField);
 	hLayout->addStretch (2);
@@ -143,20 +132,16 @@ QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
 }	// QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel
 
 
-QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (
-									const QwtChartGeneralOptionsPanel& view)
+QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (const QwtChartGeneralOptionsPanel& view)
 	: QwtChartPanel::QwtChartEditionPanel (0, 0), _chartPanel (0),
 	  _backgroundColor (Qt::white), _titleTextField (0), _titleFontPanel (0),
-	  _cartesianButton (0), _polarButton (0),
-	  _marginsTextField (0),
-	  _aspectRatioCheckbox (0), _aspectRatioTextField (0)
+	  _cartesianButton (0), _polarButton (0), _marginsTextField (0), _aspectRatioCheckbox (0), _aspectRatioTextField (0)
 {
 	assert (0 && "QwtChartGeneralOptionsPanel copy constructor is not allowed.");
 }	// QwtChartGeneralOptionsPanel::QwtChartGeneralOptionsPanel (const QwtChartGeneralOptionsPanel& view)
 
 
-QwtChartGeneralOptionsPanel& QwtChartGeneralOptionsPanel::operator = (
-										const QwtChartGeneralOptionsPanel& view)
+QwtChartGeneralOptionsPanel& QwtChartGeneralOptionsPanel::operator = (const QwtChartGeneralOptionsPanel& view)
 {
 	assert (0 && "QwtChartGeneralOptionsPanel::operator = is not allowed.");
 	return *this;
@@ -190,8 +175,7 @@ void QwtChartGeneralOptionsPanel::setTitle (const QwtText& title)
 }	// QwtChartGeneralOptionsPanel::setTitle
 
 
-QwtChartPanel::DISPLAY_MODE
-						QwtChartGeneralOptionsPanel::getDisplayMode ( ) const
+QwtChartPanel::DISPLAY_MODE QwtChartGeneralOptionsPanel::getDisplayMode ( ) const
 {
 	assert (0 != _cartesianButton);
 	assert (0 != _polarButton);
@@ -205,18 +189,15 @@ QwtChartPanel::DISPLAY_MODE
 }	// QwtChartGeneralOptionsPanel::getDisplayMode
 
 
-void QwtChartGeneralOptionsPanel::setDisplayMode (
-											QwtChartPanel::DISPLAY_MODE mode)
+void QwtChartGeneralOptionsPanel::setDisplayMode (QwtChartPanel::DISPLAY_MODE mode)
 {
 	assert (0 != _cartesianButton);
 	assert (0 != _polarButton);
 
 	switch (mode)
 	{
-		case QwtChartPanel::CARTESIAN	:
-			_cartesianButton->setChecked (true);	break;
-		case QwtChartPanel::POLAR		:
-			_polarButton->setChecked (true);	break;
+		case QwtChartPanel::CARTESIAN	: _cartesianButton->setChecked (true);	break;
+		case QwtChartPanel::POLAR		: _polarButton->setChecked (true);	break;
 		default							:
 		{
 			INTERNAL_ERROR (exc, "Mode de représentation (cartésienne/polaire) indéfini.", "QwtChartGeneralOptionsPanel::setDisplayMode")
@@ -244,8 +225,7 @@ unsigned int QwtChartGeneralOptionsPanel::getMargins ( ) const
 	if (0 > _marginsTextField->getValue ( ))
 	{
 		UTF8String	msg (charset);
-		msg << "La valeur " << (unsigned long)_marginsTextField->getValue ( )
-		    << " est négative alors qu'elle devrait être positive ou nulle.";
+		msg << "La valeur " << (unsigned long)_marginsTextField->getValue ( ) << " est négative alors qu'elle devrait être positive ou nulle.";
 		INTERNAL_ERROR (exc, msg, "QwtChartGeneralOptionsPanel::getMargins")
 		throw exc;
 	}	// if (0 > _marginsTextField->getValue ( ))
@@ -335,14 +315,11 @@ void QwtChartGeneralOptionsPanel::editTitleCallback ( )
 
 	try
 	{
-		UTF8String		title (
-			QtUnicodeHelper::qstringToUTF8String (_titleTextField->text( )));
+		UTF8String		title (QtUnicodeHelper::qstringToUTF8String (_titleTextField->text( )));
 		QFont			font		= _titleFontPanel->getFont ( );
 		QColor			textColor	= _titleFontPanel->getColor ( );
 		QColor			background	= getBackgroundColor ( );
-		QtScientificTextDialog	dialog (
-					this, "Titre du graphique", title, true, font,
-					textColor, background);
+		QtScientificTextDialog	dialog (this, "Titre du graphique", title, true, font, textColor, background);
 		if (QDialog::Accepted != dialog.exec ( ))
 			return;
 

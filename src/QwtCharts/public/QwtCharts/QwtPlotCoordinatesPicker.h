@@ -5,7 +5,9 @@
 
 #include <qwt_global.h>	// => QWT_VERSION
 
+#ifdef QT_5
 #include <qwt_compat.h>
+#endif	// QT_5
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>

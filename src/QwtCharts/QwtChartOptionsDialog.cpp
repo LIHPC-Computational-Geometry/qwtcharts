@@ -45,11 +45,8 @@ USE_ENCODING_AUTODETECTION
 	}
 
 
-QwtChartOptionsDialog::QwtChartOptionsDialog (
-					QWidget* parent, QwtChartPanel* chartPanel, bool modal,
-					const string& helpURL, const string& helpTag)
-	: QDialog (parent),
-	  _chartOptionsPanel (0), _dlgClosurePanel (0)
+QwtChartOptionsDialog::QwtChartOptionsDialog (QWidget* parent, QwtChartPanel* chartPanel, bool modal, const string& helpURL, const string& helpTag)
+	: QDialog (parent), _chartOptionsPanel (0), _dlgClosurePanel (0)
 {
 	setWindowTitle (QSTR ("Editions des propriétés du graphique"));
 	setModal (modal);
@@ -57,22 +54,22 @@ QwtChartOptionsDialog::QwtChartOptionsDialog (
 		setWindowModality (Qt::WindowModal);
 
 	QVBoxLayout*	layout	= new QVBoxLayout (this);
+#ifdef QT_5
 	layout->setMargin (QtConfiguration::margin);
+#else	// QT_5
+	layout->setContentsMargins (QtConfiguration::margin, QtConfiguration::margin, QtConfiguration::margin, QtConfiguration::margin);
+#endif	// QT_5
 	layout->setSizeConstraint (QLayout::SetMinimumSize);
 	_chartOptionsPanel	= new QwtChartOptionsPanel (this, chartPanel);
 	layout->addWidget (_chartOptionsPanel);
 
 	layout->addWidget (new QLabel (" ", this));
 
-	_dlgClosurePanel	=
-				new QtDlgClosurePanel (this, true, "Appliquer", "Fermer", "",
-				                       helpURL, helpTag);
+	_dlgClosurePanel	= new QtDlgClosurePanel (this, true, "Appliquer", "Fermer", "", helpURL, helpTag);
 	layout->addWidget (_dlgClosurePanel);
 	_dlgClosurePanel->setMinimumSize (_dlgClosurePanel->sizeHint ( ));
-	connect (_dlgClosurePanel->getApplyButton ( ), SIGNAL(clicked ( )), this,
-	         SLOT (applyCallback ( )));
-	connect (_dlgClosurePanel->getCloseButton ( ), SIGNAL(clicked ( )), this,
-	         SLOT (accept ( )));
+	connect (_dlgClosurePanel->getApplyButton ( ), SIGNAL(clicked ( )), this, SLOT (applyCallback ( )));
+	connect (_dlgClosurePanel->getCloseButton ( ), SIGNAL(clicked ( )), this, SLOT (accept ( )));
 	_dlgClosurePanel->getApplyButton ( )->setAutoDefault (false);
 	_dlgClosurePanel->getApplyButton ( )->setDefault (false);
 	_dlgClosurePanel->getCloseButton ( )->setAutoDefault (false);
@@ -94,8 +91,7 @@ QwtChartOptionsDialog::QwtChartOptionsDialog (const QwtChartOptionsDialog& view)
 }	// QwtChartOptionsDialog::QwtChartOptionsDialog (const QwtChartOptionsDialog& view)
 
 
-QwtChartOptionsDialog& QwtChartOptionsDialog::operator = (
-											const QwtChartOptionsDialog& view)
+QwtChartOptionsDialog& QwtChartOptionsDialog::operator = (const QwtChartOptionsDialog& view)
 {
 	assert (0 && "QwtChartOptionsDialog::operator = is not allowed.");
 	return *this;

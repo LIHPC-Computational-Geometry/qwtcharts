@@ -11,6 +11,7 @@
 #include <TkUtil/InformationLog.h>
 
 #include <qwt_column_symbol.h>
+#include <qwt_text.h>
 
 #include <assert.h>
 #include <values.h>

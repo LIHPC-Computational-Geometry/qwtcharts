@@ -4,7 +4,9 @@
 #include <TkUtil/Exception.h>
 #include <TkUtil/MemoryError.h>
 #include <QMouseEvent>
+#include <qwt_series_data.h>
 #include <qwt_symbol.h>
+#include <qwt_text.h>
 #include <qwt_picker_machine.h>
 
 #include <values.h>	// MAXDOUBLE
@@ -25,11 +27,8 @@ double	QwtPlotCurveCoordinatesPicker::_selectionDistance	= 10;
 // --------------------------------------------------------------------------
 
 
-QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker (
-			int xAxis, int yAxis, int selectionFlags, RubberBand rubberBand,
-			DisplayMode trackerMode, QwtPlot* plot)
-	: QwtPlotCoordinatesPicker (
-				xAxis, yAxis, selectionFlags, rubberBand, trackerMode, plot),
+QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker (int xAxis, int yAxis, int selectionFlags, RubberBand rubberBand, DisplayMode trackerMode, QwtPlot* plot)
+	: QwtPlotCoordinatesPicker (xAxis, yAxis, selectionFlags, rubberBand, trackerMode, plot),
 	  _displayMode (QwtChartPanel::CARTESIAN),
 	  _userPointIndexes ( ), _selectionRepresentation (0),
 	  _originalCurve (0), _originalData (0)
@@ -38,8 +37,7 @@ QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker (
 }	// QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker
 
 
-QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker (
-									const QwtPlotCurveCoordinatesPicker& picker)
+QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker (const QwtPlotCurveCoordinatesPicker& picker)
 	: QwtPlotCoordinatesPicker (0, 0 , 0, QwtPicker::NoRubberBand, QwtPicker::AlwaysOff,0),
 	  _displayMode (QwtChartPanel::CARTESIAN),
 	  _userPointIndexes ( ), _selectionRepresentation (0),
@@ -49,8 +47,7 @@ QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker (
 }	// QwtPlotCurveCoordinatesPicker::QwtPlotCurveCoordinatesPicker (const QwtPlotCurveCoordinatesPicker& view)
 
 
-QwtPlotCurveCoordinatesPicker& QwtPlotCurveCoordinatesPicker::operator = (
-									const QwtPlotCurveCoordinatesPicker& picker)
+QwtPlotCurveCoordinatesPicker& QwtPlotCurveCoordinatesPicker::operator = (const QwtPlotCurveCoordinatesPicker& picker)
 {
 	assert (0 && "QwtPlotCurveCoordinatesPicker::operator = is not allowed.");
 	return *this;
@@ -65,8 +62,7 @@ QwtPlotCurveCoordinatesPicker::~QwtPlotCurveCoordinatesPicker ( )
 }	// QwtPlotCurveCoordinatesPicker::~QwtPlotCurveCoordinatesPicker
 
 
-void QwtPlotCurveCoordinatesPicker::setDisplayMode (
-											QwtChartPanel::DISPLAY_MODE mode)
+void QwtPlotCurveCoordinatesPicker::setDisplayMode (QwtChartPanel::DISPLAY_MODE mode)
 {
 	_displayMode	= mode;
 }	// QwtPlotCurveCoordinatesPicker::setDisplayMode
@@ -149,8 +145,7 @@ void QwtPlotCurveCoordinatesPicker::clearSelection ( )
 
 void QwtPlotCurveCoordinatesPicker::undoLastModifiedPoint ( )
 {
-	if ((LINEAR_INTERPOLATION != getSelectionMode ( )) ||
-	    (false == allowCurveEdition ( )))
+	if ((LINEAR_INTERPOLATION != getSelectionMode ( )) || (false == allowCurveEdition ( )))
 		return;
 
 	if (0 != getSelectedCurve ( ))
@@ -174,8 +169,8 @@ void QwtPlotCurveCoordinatesPicker::undoLastModifiedPoint ( )
 							it, getSelection ( ).selectedPointIndexes.end ( ));
 		}
 
-		QwtArray<double>	xData (_originalData->size ( ));
-		QwtArray<double>	yData (_originalData->size ( ));
+		QVector<double>	xData (_originalData->size ( ));
+		QVector<double>	yData (_originalData->size ( ));
 		// Recopie des points modifiés :
 		size_t	i	= 0;
 		if (0 != _userPointIndexes.size ( ))
@@ -215,7 +210,7 @@ void QwtPlotCurveCoordinatesPicker::updateFromPlot ( )
 		// Mise à jour de l'aire contenant la sélection :
 		if (0 != _selectionRepresentation)
 		{
-			QwtDoubleRect	rect	= _selectionRepresentation->boundingRect( );
+			QRectF	rect	= _selectionRepresentation->boundingRect( );
 			if (true == rect.isValid ( ))
 			{
 				QRect	area	= transform (rect);
@@ -231,8 +226,7 @@ void QwtPlotCurveCoordinatesPicker::updateFromPlot ( )
 }	// QwtPlotCurveCoordinatesPicker::updateFromPlot
 
 
-size_t QwtPlotCurveCoordinatesPicker::pointAtX (
-									const QwtPlotCurve& curve, double x) const
+size_t QwtPlotCurveCoordinatesPicker::pointAtX (const QwtPlotCurve& curve, double x) const
 {
 	CHECK_NULL_PTR_ERROR (curve.data ( ))
 	const QwtSeriesData<QPointF>&	data	= *curve.data ( );
@@ -260,8 +254,7 @@ QwtPlotCurve* QwtPlotCurveCoordinatesPicker::getSelectionRepresentation ( )
 }	// QwtPlotCurveCoordinatesPicker::getSelectionRepresentation
 
 
-const QwtPlotCurve*	
-			QwtPlotCurveCoordinatesPicker::getSelectionRepresentation ( ) const
+const QwtPlotCurve*	QwtPlotCurveCoordinatesPicker::getSelectionRepresentation ( ) const
 {
 	return _selectionRepresentation;
 }	// QwtPlotCurveCoordinatesPicker::getSelectionRepresentation
@@ -284,26 +277,21 @@ void QwtPlotCurveCoordinatesPicker::widgetMousePressEvent (QMouseEvent* event)
 		if (0 == _originalCurve)
 		{
 			UTF8String	name (charset);
-			name << "original_"
-			     << getSelectedCurve ( )->title ( ).text ( ).toStdString ( );
-			_originalCurve	=
-					QwtUtilities::cloneCurve (*getSelectedCurve ( ), name);
+			name << "original_" << getSelectedCurve ( )->title ( ).text ( ).toStdString ( );
+			_originalCurve	= QwtUtilities::cloneCurve (*getSelectedCurve ( ), name);
 			_originalCurve->setPen (QPen (Qt::black));
 			_originalCurve->attach (getPlot ( ));
 		}	// if (0 == _originalCurve)
 		QPoint	previousPos	= getCursorPos ( );
 		getCursorPos ( )	= event->pos ( );
-		QwtDoublePoint	p			= invTransform (getCursorPos ( ));
+		QPointF	p			= invTransform (getCursorPos ( ));
 		const size_t	index		= pointAtX (*getSelectedCurve ( ), p.x ( ));
-		const size_t	lastIndex	=
-						0 == getSelection ( ).selectedPointIndexes.size ( ) ?
-						(size_t)-1 : getSelection ( ).selectedPointIndexes.back ( );
-		if ((0 != getSelection ( ).selectedPointIndexes.size ( )) &&
-		    (index <= lastIndex))
+		const size_t	lastIndex	= 0 == getSelection ( ).selectedPointIndexes.size ( ) ? (size_t)-1 : getSelection ( ).selectedPointIndexes.back ( );
+		if ((0 != getSelection ( ).selectedPointIndexes.size ( )) && (index <= lastIndex))
 			return;
 
-		QwtArray<double>	xData (getSelectedCurve ( )->dataSize ( ));
-		QwtArray<double>	yData (getSelectedCurve ( )->dataSize ( ));
+		QVector<double>	xData (getSelectedCurve ( )->dataSize ( ));
+		QVector<double>	yData (getSelectedCurve ( )->dataSize ( ));
 		// Recopie :
 		for (size_t i = 0; i < getSelectedCurve ( )->dataSize ( ); i++)
 		{
@@ -317,12 +305,8 @@ void QwtPlotCurveCoordinatesPicker::widgetMousePressEvent (QMouseEvent* event)
 			CHECK_NULL_PTR_ERROR (getSelectedCurve ( )->data ( ))
 			QwtSeriesData<QPointF>&	data= *(getSelectedCurve ( )->data ( ));
 			const double	dx	= p.x ( ) - data.sample (lastIndex).x ( );
-			const double	a	= dx < 1E-12 ?
-							MAXDOUBLE :
-								(p.y ( ) - data.sample (lastIndex).y ( )) / dx;
-			const double	b	= 0.5 *
-				(p.y ( ) + data.sample (lastIndex).y ( ) -
-								a * (p.x ( ) + data.sample (lastIndex).x ( )));
+			const double	a	= dx < 1E-12 ? MAXDOUBLE : (p.y ( ) - data.sample (lastIndex).y ( )) / dx;
+			const double	b	= 0.5 * (p.y ( ) + data.sample (lastIndex).y ( ) - a * (p.x ( ) + data.sample (lastIndex).x ( )));
 			for (size_t i = lastIndex + 1; i < index; i++)
 			{
 				yData [i]	= a * xData [i] + b;
@@ -335,9 +319,7 @@ void QwtPlotCurveCoordinatesPicker::widgetMousePressEvent (QMouseEvent* event)
 		getSelectedCurve ( )->setSamples (xData, yData);
 		delete _selectionRepresentation;	_selectionRepresentation	= 0;
 		createSelectionRepresentation ( );
-		for (vector<size_t>::const_iterator it =
-									getSelection ( ).selectedPointIndexes.begin( );
-		     getSelection ( ).selectedPointIndexes.end ( ) != it; it++)
+		for (vector<size_t>::const_iterator it = getSelection ( ).selectedPointIndexes.begin( ); getSelection ( ).selectedPointIndexes.end ( ) != it; it++)
 			emit pointModified (getSelection ( ).selectedCurveIndex, *it);
 	}	// if ((true == controlKeyPressed ( )) && (0 != getSelectedCurve ( ))
 }	// QwtPlotCurveCoordinatesPicker::widgetMousePressEvent
@@ -383,12 +365,10 @@ void QwtPlotCurveCoordinatesPicker::widgetMouseMoveEvent (QMouseEvent* event)
 	{
 		Qt::MouseButtons	buttons	= event->buttons ( );
 		if ((0 != (Qt::LeftButton & buttons)) &&
-		    (true == inSelectionArea (
-							getCursorPos ( ).x ( ), getCursorPos ( ).y ( ))))
+		    (true == inSelectionArea (getCursorPos ( ).x ( ), getCursorPos ( ).y ( ))))
 		{
 			event->accept ( );	// v 0.11.0
-			moveSelection (getCursorPos ( ).x ( ) - previousPos.x ( ),
-			               getCursorPos ( ).y ( ) - previousPos.y ( ));
+			moveSelection (getCursorPos ( ).x ( ) - previousPos.x ( ), getCursorPos ( ).y ( ) - previousPos.y ( ));
 		}
 		else
 			selectCursor (event->pos ( ));	// v 0.11.0
@@ -401,8 +381,7 @@ void QwtPlotCurveCoordinatesPicker::widgetMouseMoveEvent (QMouseEvent* event)
 void QwtPlotCurveCoordinatesPicker::begin ( )
 {
 	getInitialCursorPos ( )	= getCursorPos ( );
-	if (false == inSelectionArea (
-							getCursorPos ( ).x ( ), getCursorPos ( ).y ( )))
+	if (false == inSelectionArea (getCursorPos ( ).x ( ), getCursorPos ( ).y ( )))
 		if (LINEAR_INTERPOLATION != getSelectionMode ( ))
 			clearSelection ( );
 		else
@@ -425,8 +404,7 @@ bool QwtPlotCurveCoordinatesPicker::end (bool ok)
 		return false;
 	}	// if (false == ok)
 
-	if (((size_t)-1 != getSelection ( ).selectedCurveIndex) &&
-	    (LINEAR_INTERPOLATION != getSelectionMode ( )))
+	if (((size_t)-1 != getSelection ( ).selectedCurveIndex) && (LINEAR_INTERPOLATION != getSelectionMode ( )))
 		return QwtPlotPicker::end (ok);
 
 	switch (getSelectionMode ( ))
@@ -451,8 +429,7 @@ bool QwtPlotCurveCoordinatesPicker::curveEnd (bool ok)
 	const QwtPlotItemList&	itemList		= plot->itemList ( );
 	size_t					curveIndex		= (size_t)-1;
 	double					distance		= _selectionDistance;
-	for (QwtPlotItemIterator it = itemList.begin ( ); it != itemList.end( );
-	     it++)
+	for (QwtPlotItemIterator it = itemList.begin ( ); it != itemList.end( ); it++)
 	{
 		if ((*it)->rtti ( ) == QwtPlotItem::Rtti_PlotCurve)
 		{
@@ -498,10 +475,8 @@ bool QwtPlotCurveCoordinatesPicker::curveEnd (bool ok)
 		getSelection ( ).x2	= selectedCurve->maxXValue ( );
 		getSelection ( ).y2	= selectedCurve->maxYValue ( );
 		getViewportSelectionArea ( ).setCoords (
-				selectedCurve->minXValue ( ) - (int)_selectionDistance,
-				selectedCurve->minYValue ( ) - (int)_selectionDistance,
-				selectedCurve->maxXValue ( ) + (int)_selectionDistance,
-				selectedCurve->maxYValue ( ) + (int)_selectionDistance);
+				selectedCurve->minXValue ( ) - (int)_selectionDistance, selectedCurve->minYValue ( ) - (int)_selectionDistance,
+				selectedCurve->maxXValue ( ) + (int)_selectionDistance, selectedCurve->maxYValue ( ) + (int)_selectionDistance);
 		plot->canvas ( )->setCursor (Qt::ClosedHandCursor);
 		createSelectionRepresentation ( );
 	}
@@ -523,8 +498,7 @@ bool QwtPlotCurveCoordinatesPicker::pointEnd (bool ok)
 	size_t					curveIndex		= (size_t)-1;
 	size_t					pointIndex		= (size_t)-1;
 	double					distance		= _selectionDistance;
-	for (QwtPlotItemIterator it = itemList.begin ( ); it != itemList.end( );
-	     it++)
+	for (QwtPlotItemIterator it = itemList.begin ( ); it != itemList.end( ); it++)
 	{
 		if ((*it)->rtti ( ) == QwtPlotItem::Rtti_PlotCurve)
 		{
@@ -551,14 +525,10 @@ bool QwtPlotCurveCoordinatesPicker::pointEnd (bool ok)
 	if (0 != selectedCurve)
 	{
 		getSelection ( ).selectedPointIndexes.push_back (pointIndex);
-		QPoint	point	= transform (
-				QwtDoublePoint (selectedCurve->sample (pointIndex).x ( ),
-								selectedCurve->sample (pointIndex).y ( )));
+		QPoint	point	= transform (QPointF (selectedCurve->sample (pointIndex).x ( ), selectedCurve->sample (pointIndex).y ( )));
 		getViewportSelectionArea ( ).setCoords (
-									point.x ( ) - (int)_selectionDistance,
-									point.y ( ) - (int)_selectionDistance,
-									point.x ( ) + (int)_selectionDistance,
-									point.y ( ) + (int)_selectionDistance);
+									point.x ( ) - (int)_selectionDistance, point.y ( ) - (int)_selectionDistance,
+									point.x ( ) + (int)_selectionDistance, point.y ( ) + (int)_selectionDistance);
 		getSelection ( ).x1	= getSelection ( ).x2	= selectedCurve->sample(pointIndex).x();
 		getSelection ( ).y1	= getSelection ( ).y2	= selectedCurve->sample(pointIndex).y();
 		plot->canvas ( )->setCursor (Qt::ClosedHandCursor);
@@ -608,9 +578,7 @@ bool QwtPlotCurveCoordinatesPicker::rectEnd (bool ok)
 			const int	number	= c->dataSize ( );
 			for (int i = 0; i < number; i++)
 			{
-				QPoint	point	= transform (
-										QwtDoublePoint (c->sample (i).x ( ),
-										                c->sample (i).y ( )));
+				QPoint	point	= transform (QPointF (c->sample (i).x ( ), c->sample (i).y ( )));
 				if (true == rectangle.contains (point.x ( ), point.y ( )))
 				{
 					getSelection ( ).selectedPointIndexes.push_back (i);
@@ -629,12 +597,10 @@ bool QwtPlotCurveCoordinatesPicker::rectEnd (bool ok)
 	if ((size_t)-1 != getSelection ( ).selectedCurveIndex)
 	{
 		plot->canvas ( )->setCursor (Qt::ClosedHandCursor);
-		QwtDoublePoint	dPoint	=
-						invTransform (QPoint (rectangle.x ( ), rectangle.y( )));
+		QPointF	dPoint	= invTransform (QPoint (rectangle.x ( ), rectangle.y( )));
 		getSelection ( ).x1	= dPoint.x ( );
 		getSelection ( ).y1	= dPoint.y ( );
-		dPoint	= invTransform (QPoint (rectangle.x ( ) + rectangle.width ( ),
-				                        rectangle.y ( ) + rectangle.height( )));
+		dPoint	= invTransform (QPoint (rectangle.x ( ) + rectangle.width ( ), rectangle.y ( ) + rectangle.height( )));
 		getSelection ( ).x2	= dPoint.x ( );
 		getSelection ( ).y2	= dPoint.y ( );
 		getViewportSelectionArea ( )	= rectangle;
@@ -671,28 +637,33 @@ bool QwtPlotCurveCoordinatesPicker::linearInterpolationEnd (bool ok)
 }	// QwtPlotCurveCoordinatesPicker::linearInterpolationEnd
 
 
-QwtText QwtPlotCurveCoordinatesPicker::trackerText (
-												const QwtDoublePoint& pos) const
+QwtText QwtPlotCurveCoordinatesPicker::trackerText (const QPointF& pos) const
 {
 	QString		label;
 
 	switch (getDisplayMode ( ))
 	{
 		case QwtChartPanel::CARTESIAN	:
+#ifdef QT_5
 			label.sprintf ("%.4g %.4g", pos.x ( ), pos.y ( ));
+#else	// QT_5
+			label.asprintf ("%.4g %.4g", pos.x ( ), pos.y ( ));
+#endif	// QT_5
 			break;
 		case QwtChartPanel::POLAR		:
 		{
-			const double	radius	=
-						sqrt (pos.x ( ) * pos.x ( ) + pos.y ( ) * pos.y ( ));
-			double	angle	= 0. == pos.x ( ) ?
-						0 : atan (pos.y ( ) / pos.x ( )) * 180. / M_PI;
+			const double	radius	= sqrt (pos.x ( ) * pos.x ( ) + pos.y ( ) * pos.y ( ));
+			double	angle	= 0. == pos.x ( ) ? 0 : atan (pos.y ( ) / pos.x ( )) * 180. / M_PI;
 			if (pos.x ( ) < 0.)
 				angle	= 180. + angle;
 			else
 				if (pos.y ( ) < 0.)
 					angle	= 360. + angle;
+#ifdef QT_5
 			label.sprintf ("%.4g %.4g", angle, radius);
+#else	// QT_5
+			label.asprintf ("%.4g %.4g", angle, radius);
+#endif	// QT_5
 			break;
 		}	// case POLAR
 	}	// switch (getDisplayMode ( ))
@@ -722,8 +693,7 @@ void QwtPlotCurveCoordinatesPicker::updateSelection ( )
 					getSelection ( ).selectedPointIndexes.push_back (i);
 				break;
 			case POINT					:
-				if ((1 != getSelection ( ).selectedPointIndexes.size ( )) ||
-				    ((0 != getSelection ( ).selectedPointIndexes.size ( )) &&
+				if ((1 != getSelection ( ).selectedPointIndexes.size ( )) || ((0 != getSelection ( ).selectedPointIndexes.size ( )) &&
 				     (getSelection ( ).selectedPointIndexes[0] >= curve->dataSize())))
 					clearSelection ( );
 
@@ -735,13 +705,10 @@ void QwtPlotCurveCoordinatesPicker::updateSelection ( )
 				// On refait la sélection complète (y a-t-il eu
 				// addition/suppression et/ou déplacement de points ?
 				getSelection ( ).selectedPointIndexes.clear ( );
-				QRectF	selectionArea (getSelection ( ).x1, getSelection ( ).y1,
-						               getSelection ( ).x2 - getSelection ( ).x1,
-						               getSelection ( ).y2 - getSelection ( ).y1);;
+				QRectF	selectionArea (getSelection ( ).x1, getSelection ( ).y1, getSelection ( ).x2 - getSelection ( ).x1,  getSelection ( ).y2 - getSelection ( ).y1);
 				for (i = 0; i < curve->dataSize ( ); i++)
 				{
-					if (true == selectionArea.contains (
-							curve->sample (i).x ( ), curve->sample (i).y ( )))
+					if (true == selectionArea.contains (curve->sample (i).x ( ), curve->sample (i).y ( )))
 						getSelection ( ).selectedPointIndexes.push_back (i);
 				}
 			}
@@ -755,15 +722,11 @@ void QwtPlotCurveCoordinatesPicker::updateSelection ( )
 	}
 	catch (const Exception& exc)
 	{
-		cout << "Erreur interne dans QwtPlotCurveCoordinatesPicker::updateSelection "
-		     << "(" << __FILE__ << ' ' << __LINE__ << ") : "
-		     << exc.getFullMessage ( ) << endl;
+		cout << "Erreur interne dans QwtPlotCurveCoordinatesPicker::updateSelection " << "(" << __FILE__ << ' ' << __LINE__ << ") : " << exc.getFullMessage ( ) << endl;
 	}
 	catch (...)
 	{
-		cout << "Erreur interne dans QwtPlotCurveCoordinatesPicker::updateSelection "
-		     << "(" << __FILE__ << ' ' << __LINE__ << ") : "
-		     << "Erreur non documentée." << endl;
+		cout << "Erreur interne dans QwtPlotCurveCoordinatesPicker::updateSelection " << "(" << __FILE__ << ' ' << __LINE__ << ") : " << "Erreur non documentée." << endl;
 	}
 }	// QwtPlotCurveCoordinatesPicker::updateSelection
 
@@ -779,8 +742,7 @@ bool QwtPlotCurveCoordinatesPicker::inSelectionArea (int x, int y) const
 
 void QwtPlotCurveCoordinatesPicker::moveSelection (int dx, int dy)
 {
-	if (((0 == dx) && (0 == dy)) ||
-	    (0 == getSelection ( ).selectedPointIndexes.size ( )))
+	if (((0 == dx) && (0 == dy)) || (0 == getSelection ( ).selectedPointIndexes.size ( )))
 		return;
 	assert (0 != _selectionRepresentation);
 
@@ -789,10 +751,10 @@ void QwtPlotCurveCoordinatesPicker::moveSelection (int dx, int dy)
 	if ((0 == curve) || (0 == plot))
 		return;
 
-	QwtArray<double>	xData (curve->dataSize ( ));
-	QwtArray<double>	yData (curve->dataSize ( ));
-	QwtArray<double>	xSelData (_selectionRepresentation->dataSize ( ));
-	QwtArray<double>	ySelData (_selectionRepresentation->dataSize ( ));
+	QVector<double>	xData (curve->dataSize ( ));
+	QVector<double>	yData (curve->dataSize ( ));
+	QVector<double>	xSelData (_selectionRepresentation->dataSize ( ));
+	QVector<double>	ySelData (_selectionRepresentation->dataSize ( ));
 	size_t	i	= 0, sel	= 0;
 	// Recopie :
 	for (i = 0; i < curve->dataSize ( ); i++)
@@ -804,16 +766,13 @@ void QwtPlotCurveCoordinatesPicker::moveSelection (int dx, int dy)
 	// Déplacement des points sélectionnés :
 	int	xMin	= INT_MAX, xMax	= INT_MIN;
 	int	yMin	= INT_MAX, yMax	= INT_MIN;
-	for (vector<size_t>::const_iterator it =
-							getSelection ( ).selectedPointIndexes.begin ( );
+	for (vector<size_t>::const_iterator it = getSelection ( ).selectedPointIndexes.begin ( );
 	     getSelection ( ).selectedPointIndexes.end ( ) != it; it++, sel++)
 	{
-		QPoint	point	= transform (
-							QwtDoublePoint (curve->sample (*it).x ( ),
-							                curve->sample (*it).y ( )));
+		QPoint	point	= transform (QPointF (curve->sample (*it).x ( ), curve->sample (*it).y ( )));
 		point.setX (point.x ( ) + dx);
 		point.setY (point.y ( ) + dy);
-		QwtDoublePoint	dPoint	= invTransform (point);
+		QPointF	dPoint	= invTransform (point);
 		if (true == allowAbscissaTranslation ( ))
 			xData [*it]	= xSelData [sel]	= dPoint.x ( );
 		else
@@ -831,11 +790,8 @@ void QwtPlotCurveCoordinatesPicker::moveSelection (int dx, int dy)
 	_selectionRepresentation->setSamples (xSelData, ySelData);
 	plot->replot ( );
 	// +- 100 : on s'accorde une marge pour les déplacements rapides de souris.
-	getViewportSelectionArea ( ).setCoords (
-							xMin - 100, yMin - 100, xMax + 100, yMax + 100);
-	for (vector<size_t>::const_iterator it =
-							getSelection ( ).selectedPointIndexes.begin ( );
-		   getSelection ( ).selectedPointIndexes.end ( ) != it; it++, sel++)
+	getViewportSelectionArea ( ).setCoords (xMin - 100, yMin - 100, xMax + 100, yMax + 100);
+	for (vector<size_t>::const_iterator it = getSelection ( ).selectedPointIndexes.begin ( ); getSelection ( ).selectedPointIndexes.end ( ) != it; it++, sel++)
 	{
 		emit pointModified (getSelection ( ).selectedCurveIndex, *it);
 	}	// for (vector<size_t>::const_iterator it = ...
@@ -844,8 +800,7 @@ void QwtPlotCurveCoordinatesPicker::moveSelection (int dx, int dy)
 
 QwtPlotCurve* QwtPlotCurveCoordinatesPicker::getSelectedCurve ( )
 {
-	if (((size_t)-1 == getSelection ( ).selectedCurveIndex) ||
-	    (0 == getPlot ( )))
+	if (((size_t)-1 == getSelection ( ).selectedCurveIndex) || (0 == getPlot ( )))
 		return 0;
 
 	const QwtPlotItemList&	itemList	= getPlot ( )->itemList ( );
@@ -853,10 +808,8 @@ QwtPlotCurve* QwtPlotCurveCoordinatesPicker::getSelectedCurve ( )
 	if (getSelection ( ).selectedCurveIndex >= itemList.size ( ))
 	{
 		UTF8String	mess (charset);
-		mess << "Erreur interne en " << __FILE__ << ' ' << (unsigned long)__LINE__
-		     << " QwtPlotCurveCoordinatesPicker::getSelectedCurve. "
-		     << "Incohérence entre le numéro de courbe sélectionnée et le "
-		     << "contenu du graphique.";
+		mess << "Erreur interne en " << __FILE__ << ' ' << (unsigned long)__LINE__ << " QwtPlotCurveCoordinatesPicker::getSelectedCurve. "
+		     << "Incohérence entre le numéro de courbe sélectionnée et le contenu du graphique.";
 		ConsoleOutput::cerr ( ) << mess << co_endl;
 		return 0;
 	}	// if (getSelection ( ).selectedCurveIndex >= itemList.size ( ))
@@ -881,8 +834,7 @@ QwtPlotCurve* QwtPlotCurveCoordinatesPicker::getSelectedCurve ( )
 
 const QwtPlotCurve* QwtPlotCurveCoordinatesPicker::getSelectedCurve ( ) const
 {
-	if (((size_t)-1 == getSelection ( ).selectedCurveIndex) ||
-	    (0 == getPlot ( )))
+	if (((size_t)-1 == getSelection ( ).selectedCurveIndex) || (0 == getPlot ( )))
 		return 0;
 
 	const QwtPlotItemList&	itemList	= getPlot ( )->itemList ( );
@@ -890,15 +842,12 @@ const QwtPlotCurve* QwtPlotCurveCoordinatesPicker::getSelectedCurve ( ) const
 	if (getSelection ( ).selectedCurveIndex >= itemList.size ( ))
 	{
 		UTF8String	mess (charset);
-		mess << "Erreur interne en " << __FILE__ << ' ' << (unsigned long)__LINE__
-		     << " QwtPlotCurveCoordinatesPicker::getSelectedCurve. "
-		     << "Incohérence entre le numéro de courbe sélectionnée et le "
-		     << "contenu du graphique.";
+		mess << "Erreur interne en " << __FILE__ << ' ' << (unsigned long)__LINE__ << " QwtPlotCurveCoordinatesPicker::getSelectedCurve. "
+		     << "Incohérence entre le numéro de courbe sélectionnée et le contenu du graphique.";
 		ConsoleOutput::cerr ( ) << mess << co_endl;
 		return 0;
 	}	// if (getSelection ( ).selectedCurveIndex >= itemList.size ( ))
-	for (QwtPlotItemIterator it = itemList.begin ( ); it != itemList.end( );
-	     it++)
+	for (QwtPlotItemIterator it = itemList.begin ( ); it != itemList.end( ); it++)
 	{
 		if ((*it)->rtti ( ) == QwtPlotItem::Rtti_PlotCurve)
 		{
@@ -916,8 +865,7 @@ const QwtPlotCurve* QwtPlotCurveCoordinatesPicker::getSelectedCurve ( ) const
 }	// QwtPlotCurveCoordinatesPicker::getSelectedCurve
 
 
-void QwtPlotCurveCoordinatesPicker::getSelectionArea (
-						double& x1, double& y1, double& x2, double& y2) const
+void QwtPlotCurveCoordinatesPicker::getSelectionArea (double& x1, double& y1, double& x2, double& y2) const
 {
 	if (0 == _selectionRepresentation)
 		throw Exception ("QwtPlotCurveCoordinatesPicker::getSelectionArea : absence de sélection.");
@@ -947,9 +895,8 @@ void QwtPlotCurveCoordinatesPicker::getSelectionExtrema (
 	else
 	{
 		CHECK_NULL_PTR_ERROR (_selectionRepresentation->data ( ))
-		const QwtSeriesData<QPointF>&	data	=
-										*_selectionRepresentation->data ( );
-		const QwtDoubleRect	rect	= data.boundingRect ( );
+		const QwtSeriesData<QPointF>&	data	= *_selectionRepresentation->data ( );
+		const QRectF	rect	= data.boundingRect ( );
 		xmin	= rect.left ( );
 		ymin	= rect.top ( );
 		xmax	= rect.right ( );
@@ -965,21 +912,16 @@ void QwtPlotCurveCoordinatesPicker::createSelectionRepresentation ( )
 		return;
 	QColor	selectionColor (255, 125, 0);
 	_selectionRepresentation	= new QwtPlotCurve ("Selection");
-	_selectionRepresentation->setItemAttribute (
-			QwtPlotItem::Legend, getChartPanel ( )->isSelectionLegendShown ( ));
+	_selectionRepresentation->setItemAttribute (QwtPlotItem::Legend, getChartPanel ( )->isSelectionLegendShown ( ));
 	_selectionRepresentation->attach (getPlot ( ));
 	_selectionRepresentation->setPen (selectionColor);
-	AutoArrayPtr<double>	xData (getSelection ( ).selectedPointIndexes.size ( )),
-							yData (getSelection ( ).selectedPointIndexes.size ( ));
+	AutoArrayPtr<double>	xData (getSelection ( ).selectedPointIndexes.size ( )), yData (getSelection ( ).selectedPointIndexes.size ( ));
 	for (size_t i = 0; i < getSelection ( ).selectedPointIndexes.size ( ); i++)
 	{
-		xData [i]	= getSelectedCurve ( )->sample (
-							getSelection ( ).selectedPointIndexes [i]).x ( );
-		yData [i]	= getSelectedCurve ( )->sample (
-							getSelection ( ).selectedPointIndexes [i]).y ( );
+		xData [i]	= getSelectedCurve ( )->sample (getSelection ( ).selectedPointIndexes [i]).x ( );
+		yData [i]	= getSelectedCurve ( )->sample (getSelection ( ).selectedPointIndexes [i]).y ( );
 	}	// for (size_t i = 0; i < getSelection ( ).selectedPointIndexes.size ( ); i++)
-	_selectionRepresentation->setSamples (xData.get ( ), yData.get ( ),
-                                 getSelection ( ).selectedPointIndexes.size( ));
+	_selectionRepresentation->setSamples (xData.get ( ), yData.get ( ), getSelection ( ).selectedPointIndexes.size( ));
 
 	const QwtSymbol*	sym		= getSelectedCurve ( )->symbol ( );
 	QwtSymbol*			symbol	= new QwtSymbol ( );
@@ -988,8 +930,7 @@ void QwtPlotCurveCoordinatesPicker::createSelectionRepresentation ( )
 	// Ecraser le symbol de la courbe originelle :
 	QSize	size	= 0 == sym ? QSize (3, 3) : sym->size ( );
 	size	= size + QSize (4, 4);
-	QwtUtilities::setSymbolAttributes (
-			*symbol, QwtSymbol::Triangle, size, selectionColor, selectionColor);
+	QwtUtilities::setSymbolAttributes (*symbol, QwtSymbol::Triangle, size, selectionColor, selectionColor);
 
 	_selectionRepresentation->setSymbol (symbol);
 	getPlot ( )->replot ();

@@ -17,8 +17,11 @@
 #include <QMdiSubWindow>
 #include <QToolButton>
 
-
 #include "QwtCharts/QwtChartPrintDialog.h"
+
+
+#include <qwt_plot.h>
+#include <qwt_text.h>
 
 #include <memory>
 #include <assert.h>
@@ -527,8 +530,13 @@ void QwtChartsManager::printCallback ( )
 		else
 			if (0 != lastFileName.size ( ))
 				printer.setOutputFileName (lastFileName);
-		printer.setOrientation (canvas->width ( ) > canvas->height ( ) ?
-		                             QPrinter::Landscape : QPrinter::Portrait);
+#ifdef QT_5
+		printer.setOrientation (canvas->width ( ) > canvas->height ( ) ? QPrinter::Landscape : QPrinter::Portrait);
+#else	// QT_5
+		QPageLayout	pageLayout	= printer.pageLayout ( );
+		pageLayout.setOrientation (canvas->width ( ) > canvas->height ( ) ? QPageLayout::Landscape : QPageLayout::Portrait);
+		printer.setPageLayout (pageLayout);
+#endif	// QT_5
 		unique_ptr<QwtChartPrintDialog>	printDialog(new QwtChartPrintDialog(&printer, window));
 		printDialog->setWindowTitle ("Impression");
 		if (QDialog::Accepted == printDialog->exec ( ))
@@ -539,49 +547,37 @@ void QwtChartsManager::printCallback ( )
 				return;
 
 			QPrintEngine*	engine	= printer.printEngine ( );
-			QVariant	name	= 0 == engine ? QVariant ("inconnue") :
-					engine->property (QPrintEngine::PPK_PrinterName);
+			QVariant	name	= 0 == engine ? QVariant ("inconnue") : engine->property (QPrintEngine::PPK_PrinterName);
 			UTF8String		msg (charset), dest (charset);
 			if (0 != printer.outputFileName ( ).size ( ))
 			{
 				toPrinter		= false;
 				lastFileName	= printer.outputFileName ( );
-				dest << "dans le fichier "
-				     << printer.outputFileName ( ).toStdString ( );
+				dest << "dans le fichier " << printer.outputFileName ( ).toStdString ( );
 			}
 			else
 			{
 				toPrinter		= true;
 				lastPrinterName	= printer.printerName ( );
-				dest << "vers l'imprimante "
-				     << name.toString ( ).toStdString ( );
+				dest << "vers l'imprimante "  << name.toString ( ).toStdString ( );
 			}	// else if (0 != printer.outputFileName ( ).size ( ))
 			switch (printer.printerState ( ))
 			{
 				case QPrinter::Error	: 
-					msg << "Echec de l'impression du document "
-					    << window->getTitle ( ).text ( ).toStdString  ( ) << " "
-					    << dest << ".";
+					msg << "Echec de l'impression du document " << window->getTitle ( ).text ( ).toStdString  ( ) << " " << dest << ".";
 					displayErrorMessage (window, msg);
 					break;
 				case QPrinter::Idle		:
-					msg << "Impression du document "
-					    << window->getTitle ( ).text ( ).toStdString  ( )
-					    << " " << dest << " effectué.";
+					msg << "Impression du document " << window->getTitle ( ).text ( ).toStdString  ( ) << " " << dest << " effectué.";
 					displayInformationMessage (window, msg);
 					break;
 				case QPrinter::Active		:
-					msg << "Impression du document "
-					    << window->getTitle ( ).text ( ).toStdString  ( )
-					    << " " << dest << " en cours.";
+					msg << "Impression du document " << window->getTitle ( ).text ( ).toStdString  ( ) << " " << dest << " en cours.";
 					displayInformationMessage (window, msg);
 					break;
 				default		:
-					msg << "Status inconnu ("
-					    << (unsigned long)printer.printerState ( )
-					    << ") de l'impression du document "
-					    << window->getTitle ( ).text ( ).toStdString  ( )
-					    << " " << dest << ".";
+					msg << "Status inconnu (" << (unsigned long)printer.printerState ( ) << ") de l'impression du document "
+					    << window->getTitle ( ).text ( ).toStdString  ( ) << " " << dest << ".";
 					displayWarningMessage (window, msg);
 			}	// switch (printer.printerState ( ))
 		}	// if (QDialog::Accepted == printDialog->exec ( ))
@@ -975,14 +971,10 @@ void QwtChartsManager::focusChanged (const QwtChartPanel* panel)
 		_showLegendAction->setChecked (currentPanel->hasLegend ( ));
 		switch (currentPanel->getLegendPosition ( ))
 		{
-			case QwtPlot::TopLegend		:
-							_topLegendAction->setChecked (true);	break;
-			case QwtPlot::BottomLegend	:
-							_bottomLegendAction->setChecked (true);	break;
-			case QwtPlot::RightLegend		:
-							_rightLegendAction->setChecked (true);	break;
-			case QwtPlot::LeftLegend		:
-							_leftLegendAction->setChecked (true);	break;
+			case QwtPlot::TopLegend		: _topLegendAction->setChecked (true);		break;
+			case QwtPlot::BottomLegend	: _bottomLegendAction->setChecked (true);	break;
+			case QwtPlot::RightLegend	: _rightLegendAction->setChecked (true);	break;
+			case QwtPlot::LeftLegend	: _leftLegendAction->setChecked (true);		break;
 		}	// switch (currentPanel->getLegendPosition ( ))
 
 		assert (0 != _verMajorLinesAction);
@@ -993,14 +985,10 @@ void QwtChartsManager::focusChanged (const QwtChartPanel* panel)
 		QtActionAutoLock	horMinorLock (_horMinorLinesAction);
 		QtActionAutoLock	verMajorLock (_verMajorLinesAction);
 		QtActionAutoLock	verMinorLock (_verMinorLinesAction);
-		_verMajorLinesAction->setChecked (
-								currentPanel->areVerMajorLinesDisplayed ( ));
-		_verMinorLinesAction->setChecked (
-								currentPanel->areVerMinorLinesDisplayed ( ));
-		_horMajorLinesAction->setChecked (
-								currentPanel->areHorMajorLinesDisplayed ( ));
-		_horMinorLinesAction->setChecked (
-								currentPanel->areHorMinorLinesDisplayed ( ));
+		_verMajorLinesAction->setChecked (currentPanel->areVerMajorLinesDisplayed ( ));
+		_verMinorLinesAction->setChecked (currentPanel->areVerMinorLinesDisplayed ( ));
+		_horMajorLinesAction->setChecked (currentPanel->areHorMajorLinesDisplayed ( ));
+		_horMinorLinesAction->setChecked (currentPanel->areHorMinorLinesDisplayed ( ));
 	}	// if (0 != currentPanel)
 }	// QwtChartsManager::focusChanged
 
