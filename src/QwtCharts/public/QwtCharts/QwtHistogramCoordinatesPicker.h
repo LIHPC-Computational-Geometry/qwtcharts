@@ -5,7 +5,10 @@
 
 #include <qwt_global.h>	// => QWT_VERSION
 
+#ifdef QT_5
 #include <qwt_compat.h>
+#endif	// QT_5
+
 #include "QwtCharts/QwtPlotCoordinatesPicker.h"
 
 
@@ -13,14 +16,11 @@ class QwtHistogramChartPanel;
 class QwtExtendedMultiBarChart;
 
 /**
- * <P>Classe de picker Qwt affichant les coordonnées pointées par la souris
- * spécialisé pour des graphiques type Histogrammes..
+ * <P>Classe de picker Qwt affichant les coordonnées pointées par la souris spécialisé pour des graphiques type Histogrammes..
  * Permet la sélection d'entités de l'histogramme.
  * </P>
- * @warning		Les instances de cette classe ne sont pas informées des
- *				éventuels évènements pouvant survenir au niveau du graphique,
- *				tel qu'un zoom. Il convient d'appeler la méthode updateFromPlot
- *				dans de telles circonstances.
+ * @warning		Les instances de cette classe ne sont pas informées des éventuels évènements pouvant survenir au niveau du graphique,
+ *				tel qu'un zoom. Il convient d'appeler la méthode updateFromPlot dans de telles circonstances.
  */
 class QwtHistogramCoordinatesPicker : public QwtPlotCoordinatesPicker
 {
@@ -118,7 +118,6 @@ class QwtHistogramCoordinatesPicker : public QwtPlotCoordinatesPicker
 	void pointModified (int curve, int point);
 
 
-
 	protected :
 
 	/**
@@ -145,7 +144,7 @@ class QwtHistogramCoordinatesPicker : public QwtPlotCoordinatesPicker
 	 *				graphique.
 	 * @see			getDisplayMode
 	 */
-	virtual QwtText trackerTextF (const QwtDoublePoint& pos) const;	// v 1.12.0
+	virtual QwtText trackerTextF (const QPointF& pos) const;	// v 1.12.0
 
 	/**
 	 * @return		<I>true</I> si le point tranmis en argument est dans la zone

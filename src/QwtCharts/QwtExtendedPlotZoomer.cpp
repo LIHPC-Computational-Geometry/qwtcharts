@@ -3,14 +3,15 @@
 #include "QwtCharts/QwtChartPanel.h"
 
 #include <QWheelEvent>
+#include <qwt_scale_widget.h>
+
 
 #include <assert.h>
 #include <iostream>
 using namespace std;
 
 
-QwtExtendedPlotZoomer::QwtExtendedPlotZoomer (
-									QwtPlotCanvas* canvas, bool doReplot)
+QwtExtendedPlotZoomer::QwtExtendedPlotZoomer (QwtPlotCanvas* canvas, bool doReplot)
 	: QwtPlotZoomer (canvas, doReplot), _chartPanel (0)
 {
 	// Qwt 6 : initMousePattern (2) requis pour éviter que le zoomer réagisse à
@@ -23,8 +24,7 @@ QwtExtendedPlotZoomer::QwtExtendedPlotZoomer (
 }	// QwtExtendedPlotZoomer::QwtExtendedPlotZoomer
 
 
-QwtExtendedPlotZoomer::QwtExtendedPlotZoomer (
-				int xAxis, int yAxis, QwtPlotCanvas* canvas, bool doReplot)
+QwtExtendedPlotZoomer::QwtExtendedPlotZoomer (int xAxis, int yAxis, QwtPlotCanvas* canvas, bool doReplot)
 	: QwtPlotZoomer (xAxis, yAxis, canvas, doReplot), _chartPanel (0)
 {
 	// Qwt 6 : initMousePattern (2) requis pour éviter que le zoomer réagisse à
@@ -44,8 +44,7 @@ QwtExtendedPlotZoomer::QwtExtendedPlotZoomer (const QwtExtendedPlotZoomer&)
 }	// QwtExtendedPlotZoomer::QwtExtendedPlotZoomer
 
 
-QwtExtendedPlotZoomer& QwtExtendedPlotZoomer::operator = (
-												const QwtExtendedPlotZoomer& pr)
+QwtExtendedPlotZoomer& QwtExtendedPlotZoomer::operator = (const QwtExtendedPlotZoomer& pr)
 {
 	assert (0 && "QwtExtendedPlotZoomer::operator = is not allowed.");
 
@@ -77,7 +76,7 @@ void QwtExtendedPlotZoomer::rescale ( )
 	if (0 == managedPlot)
 		return;
 
-	const QwtDoubleRect&	rect	= zoomRect ( );
+	const QRectF&	rect	= zoomRect ( );
 	if (rect == scaleRect ( ))
 		return;
 

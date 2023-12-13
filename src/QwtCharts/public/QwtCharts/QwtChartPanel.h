@@ -936,9 +936,9 @@ class QwtChartPanel : public QWidget
 	 */
 	// Rem CP : le compilo moc ne tient pas compte des -D...
 	// => on a ici 2 fonctions callbacks analogues de même signature car
-	// QwtDoubleRect est un typedef sur QRectF ... Mais ça ne marche pas au
+	// QRectF est un typedef sur QRectF ... Mais ça ne marche pas au
 	// niveau de connect qui repose sur des strings.
-	virtual void zoomCallback_Qwt5 (const QwtDoubleRect&);
+	virtual void zoomCallback_Qwt5 (const QRectF&);
 	virtual void zoomCallback_Qwt6 (const QRectF&);
 
 

@@ -2,6 +2,8 @@
 #include <TkUtil/NumericConversions.h>
 #include <QtUtil/QtUnicodeHelper.h>
 
+#include <qwt_text.h>
+
 #include <iostream>
 #include <ctype.h>
 
@@ -12,8 +14,7 @@ USING_STD
 static const Charset	charset ("àéèùô");
 USE_ENCODING_AUTODETECTION
 
-QwtExtendedScaleDraw::QwtExtendedScaleDraw (
-										unsigned char precision, char format)
+QwtExtendedScaleDraw::QwtExtendedScaleDraw (unsigned char precision, char format)
 	: QwtScaleDraw ( ), _precision (precision), _format (format),
 	  _isNumberOfDecimalsEnabled (false), _numberOfDecimals (3),
 	  _autoNumberOfDecimals (3)
@@ -30,8 +31,7 @@ QwtExtendedScaleDraw::QwtExtendedScaleDraw (const QwtExtendedScaleDraw& qesd)
 }	// QwtExtendedScaleDraw::QwtExtendedScaleDraw
 
 
-QwtExtendedScaleDraw& QwtExtendedScaleDraw::operator = (
-											const QwtExtendedScaleDraw& qesd)
+QwtExtendedScaleDraw& QwtExtendedScaleDraw::operator = (const QwtExtendedScaleDraw& qesd)
 {
 cerr << __FILE__ << ' ' << __LINE__ << " QwtExtendedScaleDraw::operator = is not yet implemented for QWT 6.x." << endl;
 

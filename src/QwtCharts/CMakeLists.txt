@@ -10,10 +10,11 @@ find_package (Qwt REQUIRED)	# définit ${QWT_TARGET}
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/common_qt.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 
 find_package (QtUtil 6 REQUIRED)
-find_package(Qt5Core 5 NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
+find_package(Qt${QT_MAJOR}Core ${QT_MAJOR} NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
 
 file (GLOB HEADERS public/${CURRENT_PACKAGE_NAME}/*.h)
 file (GLOB CPP_SOURCES *.cpp *.qrc)
@@ -26,7 +27,7 @@ set_property (TARGET QwtCharts PROPERTY AUTORCC ON)	# => QwtCharts.qrc taken int
 set (ALL_TARGETS QwtCharts)
 set_property (TARGET QwtCharts PROPERTY VERSION ${QWT_CHARTS_VERSION})
 set_property (TARGET QwtCharts PROPERTY SOVERSION ${QWT_CHARTS_MAJOR_VERSION})
-set (QWT_CHARTS_PUBLIC_FLAGS -DQT_5)
+set (QWT_CHARTS_PUBLIC_FLAGS -DQT_${QT_MAJOR})
 set (QWT_CHARTS_PRIVATE_FLAGS -DQWT_CHARTS_VERSION="${QWT_CHARTS_VERSION}")
 
 target_include_directories (QwtCharts PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/public>$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>)

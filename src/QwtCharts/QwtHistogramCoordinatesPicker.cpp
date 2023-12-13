@@ -6,6 +6,7 @@
 #include <TkUtil/MemoryError.h>
 #include <QMouseEvent>
 #include <qwt_symbol.h>
+#include <qwt_text.h>
 #include <qwt_picker_machine.h>
 
 #include <values.h>	// MAXDOUBLE
@@ -132,7 +133,7 @@ void QwtHistogramCoordinatesPicker::updateFromPlot ( )
 		// Mise à jour de l'aire contenant la sélection :
 		if (0 != _selectionRepresentation)
 		{
-			QwtDoubleRect	rect	= _selectionRepresentation->boundingRect( );
+			QRectF	rect	= _selectionRepresentation->boundingRect( );
 			if (true == rect.isValid ( ))
 			{
 				QRect	area	= transform (rect);
@@ -227,7 +228,7 @@ bool QwtHistogramCoordinatesPicker::end (bool ok)
 }	// QwtHistogramCoordinatesPicker::end
 
 
-QwtText QwtHistogramCoordinatesPicker::trackerTextF (const QwtDoublePoint& p) const
+QwtText QwtHistogramCoordinatesPicker::trackerTextF (const QPointF& p) const
 {
 	QPoint	pos	= getCursorPos ( );
 	const QwtExtendedMultiBarChart*	histogram	= getHistogram ( );
@@ -237,8 +238,11 @@ QwtText QwtHistogramCoordinatesPicker::trackerTextF (const QwtDoublePoint& p) co
 		double	c	= 0.;
 		size_t	num	= 0;
 		if (true == histogram->intersects (pos.x ( ), pos.y ( ), c, num))
+#ifdef QT_5
 			text.sprintf ("%.4f, %lu", c, num);	// v 4.2.1 : %u -> %lu
-
+#else	// QT_5
+			text.asprintf ("%.4f, %lu", c, num);	// v 4.2.1 : %u -> %lu
+#endif	// QT_5
 		return text;
 	}	// if (0 != histogram)
 

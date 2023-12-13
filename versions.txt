@@ -1,6 +1,14 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
+Version 5.3.0 : 13/12/23
+===============
+
+Portage Qt 6/GUIToolkitsVariables v 1.4.0/QtUtil v 6.4.0.
+QwtDoublePoint -> QPointF
+QwtDoubleRect -> QRectF
+
+
 Version 5.2.0 : 23/06/23
 ===============
 

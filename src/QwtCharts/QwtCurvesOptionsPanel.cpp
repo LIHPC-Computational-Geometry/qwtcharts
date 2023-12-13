@@ -13,6 +13,7 @@
 #include <QGroupBox>
 
 #include <qwt_plot_legenditem.h>
+#include <qwt_text.h>
 
 #include <assert.h>
 
