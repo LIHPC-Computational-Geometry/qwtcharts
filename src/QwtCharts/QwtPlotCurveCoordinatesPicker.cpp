@@ -11,7 +11,7 @@
 
 #include <values.h>	// MAXDOUBLE
 #include <assert.h>
-
+#include <math.h>
 
 USING_UTIL
 using namespace std;

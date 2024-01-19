@@ -14,6 +14,8 @@
 #include <QtUtil/QtStringHelper.h>
 #include <qwt_text.h>
 
+#include <math.h>
+
 using namespace std;
 using namespace TkUtil;
 

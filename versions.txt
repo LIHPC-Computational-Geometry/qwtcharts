@@ -1,6 +1,14 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
+Version 5.3.1 : 12/01/24
+===============
+
+Ajout #include<math.h> manquants.
+
+GUIToolkitsVariables v 1.4.3 : FindQwt.cmake gère les dépendances de Qwt à Qt.
+
+
 Version 5.3.0 : 13/12/23
 ===============
 
