@@ -12,7 +12,7 @@
 
 #include <assert.h>
 #include <values.h>
-
+#include <math.h>
 
 USING_UTIL
 USING_STD
