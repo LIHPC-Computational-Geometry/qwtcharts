@@ -1,12 +1,19 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
+Version 5.3.2 : 24/01/25
+===============
+
+Correctifs affichage des histogrammes dans les cas oÃ¹ l'on ne demande qu'une classe, cela aboutissait Ã  des histogrammes plats,
+sans lÃ©gende des axes.
+
+
 Version 5.3.1 : 12/01/24
 ===============
 
 Ajout #include<math.h> manquants.
 
-GUIToolkitsVariables v 1.4.3 : FindQwt.cmake gère les dépendances de Qwt à Qt.
+GUIToolkitsVariables v 1.4.3 : FindQwt.cmake gÃ¨re les dÃ©pendances de Qwt Ã  Qt.
 
 
 Version 5.3.0 : 13/12/23
@@ -22,13 +29,13 @@ Version 5.2.0 : 23/06/23
 
 Sortie du projet GUIToolkits.
 
-Les includes (FindQwt.cmake) sont remplacés par des find_package/dependency (Qwt)
+Les includes (FindQwt.cmake) sont remplacÃ©s par des find_package/dependency (Qwt)
 
 
 Version 5.1.1 : 06/06/23
 ===============
 
-Retouches cmake (dépendance GUIToolkitsVariables pour accéder à FindQwt.cmake).
+Retouches cmake (dÃ©pendance GUIToolkitsVariables pour accÃ©der Ã  FindQwt.cmake).
 
 
 Version 5.1.0 : 31/03/23
@@ -40,13 +47,13 @@ Portage GitHub environnement podman/spack/tests CI.
 Version 5.0.0 : 10/01/23
 ===============
 
-Intégration au projet GUIToolkits.
+IntÃ©gration au projet GUIToolkits.
 
 
 Version 4.4.13 : 25/11/22
 ================
 
-Suppression répertoire module.
+Suppression rÃ©pertoire module.
 
 
 Version 4.4.12 : 09/02/22
@@ -73,69 +80,69 @@ Version 4.4.9 : 24/08/21
 Suppression des noms de services et laboratoires.
 
 
-Version 4.4.8 : 22/12/20 Révisions svn 394/395
+Version 4.4.8 : 22/12/20 RÃ©visions svn 394/395
 ===============
 
 Retouche mineure CMakeLists.txt
 
 
-Version 4.4.7 : 14/12/20 Révisions svn 392/393
+Version 4.4.7 : 14/12/20 RÃ©visions svn 392/393
 ===============
 
 Retouche mineure CMakeLists.txt racine
 
 
-Version 4.4.6 : 04/11/20 Révisions svn 390/391
+Version 4.4.6 : 04/11/20 RÃ©visions svn 390/391
 ===============
 
-Ajout dépendance à QtUtil pour les utilisateurs de cette bibliothèque.
-Retouches fichiers CMakeLists.txt relatives à l'utilisation de Qt.
+Ajout dÃ©pendance Ã  QtUtil pour les utilisateurs de cette bibliothÃ¨que.
+Retouches fichiers CMakeLists.txt relatives Ã  l'utilisation de Qt.
 
 
-Version 4.4.5 : 06/10/20 Révisions svn 388/389
+Version 4.4.5 : 06/10/20 RÃ©visions svn 388/389
 ===============
 
 Retouches mineures pour export.
 
 
-Version 4.4.4 : 22/07/20 Révisions svn 385/386
+Version 4.4.4 : 22/07/20 RÃ©visions svn 385/386
 ===============
 
 v 0.8.0 de cmake/workarounds.cmake (LC_ALL=C)
 
 
-Version 4.4.3 : 15/07/20 Révisions svn 382/383
+Version 4.4.3 : 15/07/20 RÃ©visions svn 382/383
 ===============
 
-- Ajout -DNDEBUG à la compilation en mode non debug.
+- Ajout -DNDEBUG Ã  la compilation en mode non debug.
 - Actualisation des fichiers d'installation par scripting (build.sh, configurations/*).
 
 
-Version 4.4.2 : 25/06/20 Révisions svn 3XX/3XX
+Version 4.4.2 : 25/06/20 RÃ©visions svn 3XX/3XX
 ===============
 
 Petits correctifs pour import/export.
 
 
-Version 4.4.1 : 08/06/20 Révisions svn 377/378
+Version 4.4.1 : 08/06/20 RÃ©visions svn 377/378
 ===============
 
 Petits correctifs pour import/export.
-cmake/common.cmake : ajout à CMAKE_CXX_FLAGS de la variable EXTRA_CXX_FLAGS éventuellement transmise en argument
+cmake/common.cmake : ajout Ã  CMAKE_CXX_FLAGS de la variable EXTRA_CXX_FLAGS Ã©ventuellement transmise en argument
 de cmake.
 
 
-Version 4.4.0 : 04/06/20 Révisions svn 375/376
+Version 4.4.0 : 04/06/20 RÃ©visions svn 375/376
 ===============
 
-Fin réintégration en environnement CEA suite confinement covid-19.
-Procédure d'exportation ouverte des sources : cible export avec script export.sh
+Fin rÃ©intÃ©gration en environnement CEA suite confinement covid-19.
+ProcÃ©dure d'exportation ouverte des sources : cible export avec script export.sh
 
 
 Version 4.3.0 : 06/04/20
 ===============
 
-Déplacement des en-têtes dans le répertoire QwtCharts
+DÃ©placement des en-tÃªtes dans le rÃ©pertoire QwtCharts
 TkUtil v 5.4.0
 QtUtil v 5.3.0
 
@@ -145,52 +152,52 @@ Version 4.2.0 : 28/03/20
 
 Correctifs mineurs :
 - QwtHistogramCoordinatesPicker::trackerTextF : dans sprintf, %u -> %lu
-- QwtExtendedMultiBarChart::drawBar : adaptation à l'API QFontMetrics introduite à la v 5.11.0
+- QwtExtendedMultiBarChart::drawBar : adaptation Ã  l'API QFontMetrics introduite Ã  la v 5.11.0
 
 Passage du projet en UTF-8
 Portage g++ v 7.5.0
 auto_ptr -> unique_ptr
 
 
-Version 4.1.0 : 17/02/20. Révisions svn 367
+Version 4.1.0 : 17/02/20. RÃ©visions svn 367
 ===============
 
-- Retouches compatibilité (SameMinorVersion -> SameMajorVersion)
+- Retouches compatibilitÃ© (SameMinorVersion -> SameMajorVersion)
 
 
-Version 4.0.3 : 03/02/20. Révisions svn 363
+Version 4.0.3 : 03/02/20. RÃ©visions svn 363
 ===============
 
-Retouches gestion des dépendances.
+Retouches gestion des dÃ©pendances.
 
 
-Version 4.0.2 : 21/01/20. Révisions svn 362
+Version 4.0.2 : 21/01/20. RÃ©visions svn 362
 ===============
 
-Script de génération de l'archive des sources, script create_tarball.sh.
+Script de gÃ©nÃ©ration de l'archive des sources, script create_tarball.sh.
 Fichier LISEZMOI.txt
 
 
-Version 4.0.1 : 06/01/20 révisions svn 361
+Version 4.0.1 : 06/01/20 rÃ©visions svn 361
 ===============
 
 Portage (Atos_7__x86_64). Retouche workarounds.cmake pour lib stdc++ GNU.
 
 
-Version 4.0.0 : 18/12/19 révisions svn r358/r359
+Version 4.0.0 : 18/12/19 rÃ©visions svn r358/r359
 ===============
 
-Portage CMake/Spack g++ 8.3/intel 18.0.3 (arrêt GSCC).
+Portage CMake/Spack g++ 8.3/intel 18.0.3 (arrÃªt GSCC).
 Portage Qwt 6.1.4
 
 
-Version 3.8.0 : 26/09/19 révision svn r351/r352
+Version 3.8.0 : 26/09/19 rÃ©vision svn r351/r352
 ===============
 
 TK_variants v 4.10.0. 
 
 
-Version 3.7.1 : 12/09/19 révision svn r348/r349
+Version 3.7.1 : 12/09/19 rÃ©vision svn r348/r349
 ===============
 
 TK_variants v 4.9.1.
@@ -198,10 +205,10 @@ TK_variants v 4.9.1.
 - QwtExtendedScaleDraw::label : correctif concernant la gestion
 des exposants dans les labels des axes.
 Ex : 4e-5 -> 4e-e-5, -2e-5 -> -2ee-5.
-Ce bogue était il à l'origine de plantages dans des applications ???
+Ce bogue Ã©tait il Ã  l'origine de plantages dans des applications ???
 
 
-Version 3.7.0 : 06/09/19 révision svn r345/r346
+Version 3.7.0 : 06/09/19 rÃ©vision svn r345/r346
 ===============
 
 TK_variants v 4.9.0.
@@ -210,32 +217,32 @@ TkUtil v 4.6.0, QtUtil v 4.6.0.
 Utilisation de QColorDialog non natives.
 
 
-Version 3.6.1 : 04/06/19 révision svn r340/r342
+Version 3.6.1 : 04/06/19 rÃ©vision svn r340/r342
 ===============
 
 QwtChartsManager::selectionModeCallback ne propage l'exception
-levée par un panneau que si il s'agit du panneau courrant.
+levÃ©e par un panneau que si il s'agit du panneau courrant.
 QwtChartsManager::displayErrorMessage prend en compte l'encodage
 des messages d'erreur.
 
-Cela concerne à l'origine la sélection par interpolation linéaire
-qui levait systématiquement une exception dès lors qu'il y avait
+Cela concerne Ã  l'origine la sÃ©lection par interpolation linÃ©aire
+qui levait systÃ©matiquement une exception dÃ¨s lors qu'il y avait
 au moins 2 panneaux.
 
 
-Version 3.6.0 : 28/11/18 révision svn r334/r336
+Version 3.6.0 : 28/11/18 rÃ©vision svn r334/r336
 ===============
 
 TkUtil v 4.5.0 (TK_Variants v 4.6.0).
 
 
-Version 3.5.0 : 16/11/18 révision svn r330/r332
+Version 3.5.0 : 16/11/18 rÃ©vision svn r330/r332
 ===============
 
 TkUtil v 4.4.0.
 
 
-Version 3.4.0 : 14/09/18 révision svn r327/r329
+Version 3.4.0 : 14/09/18 rÃ©vision svn r327/r329
 ===============
 
 TkUtil v 4.3.0.
@@ -243,24 +250,24 @@ TkUtil v 4.3.0.
 Utilisation de ConsoleOutput::cout ( ) et cerr ( ) de TkUtil.
 
 
-Version 3.3.0 : 04/09/18 révision svn r324/r326
+Version 3.3.0 : 04/09/18 rÃ©vision svn r324/r326
 ===============
 
 TK_Variants v 4.3.0 (TkUtil v 4.2.0, QtUtil v 4.3.0)
 
 
-Version 3.2.0 : 08/06/18 révision svn r321/r323
+Version 3.2.0 : 08/06/18 rÃ©vision svn r321/r323
 ===============
 
 TK_Variants v 4.2.0 (TkUtil v 4.1.0, nouveaux services UTF8String)
 
 
-Version 3.1.0 : 08/06/18 révision svn r318/r320
+Version 3.1.0 : 08/06/18 rÃ©vision svn r318/r320
 ===============
 
 TK_Variants v 4.1.0 (Qt591, ECM_Variants v 1.22.0 => arret cible
 BullEL_6_AE__x86_64).
-Utilisation du scenario de deploiement QT_LIBS. Déploiement uniquement des
+Utilisation du scenario de deploiement QT_LIBS. DÃ©ploiement uniquement des
 versions statiques.
 
 
@@ -269,8 +276,8 @@ Version 3.0.0 : 22/03/18
 
 TK_Variants v 4.0.0
 
-Utilisation des nouveaux services de TkUtil/QtUtil dans l'auto-détection du jeu
-de caractères utilisé pour encoder les fichiers sources.
+Utilisation des nouveaux services de TkUtil/QtUtil dans l'auto-dÃ©tection du jeu
+de caractÃ¨res utilisÃ© pour encoder les fichiers sources.
 
 
 Version 2.5.0 : 10/11/17
@@ -280,16 +287,16 @@ TK_Variants v 3.0.0 (ECM_Variants v 1.21.0 : portage RH 7,
 compilateurs gcc 6.2.0, icpc 17.0.4)
 
 Fichier CharToLatinQString : macro permettant de transformer automatiquement des
-char* en QLatin1String, utile à partir de Qt 5.?.
+char* en QLatin1String, utile Ã  partir de Qt 5.?.
 
-Retouche de la règle de conversion .h -> moc_* requise à partir de Qt 5.?. En
+Retouche de la rÃ¨gle de conversion .h -> moc_* requise Ã  partir de Qt 5.?. En
 effet moc, lorsque la sortie est un fichier (et non stdout), fait les includes
-vers le .h compilé en relatif et non pas en asbsolu, et, du coup, ça ne marche
-pas forcément ...
+vers le .h compilÃ© en relatif et non pas en asbsolu, et, du coup, Ã§a ne marche
+pas forcÃ©ment ...
 
 Suppression des QtCore/, QtGui/ et autre au niveau des include car incompatible
-avec les stations RH7 qui ont ses répertoires dans /usr/include => les fichiers
-inclus viennent de là en priorité et ce peut être incompatible avec ceux issus
+avec les stations RH7 qui ont ses rÃ©pertoires dans /usr/include => les fichiers
+inclus viennent de lÃ  en prioritÃ© et ce peut Ãªtre incompatible avec ceux issus
 de notre distribution ...
 
 
@@ -324,7 +331,7 @@ Version 2.0.0 : 09/12/16
 
 TkUtil/QtUtil v 3.0.0
 
-Arrêt variant MT
+ArrÃªt variant MT
 
 
 Version 1.14.0 : 29/08/16
@@ -345,17 +352,17 @@ Version 1.12.0 : 09/02/16
 Correctifs :
 - QwtExtendedMultiBarChart::drawOverlappedBars : position x0
 - QwtHistogramCoordinatesPicker::trackerText : surcharge de trackerTextF
-utilisé pour les histogrammes, différntes retouches pour afficher
+utilisÃ© pour les histogrammes, diffÃ©rntes retouches pour afficher
 l'abscisse de la barre et non plus du point.
-=> Méthode QwtExtendedMultiBarChart::intersects
+=> MÃ©thode QwtExtendedMultiBarChart::intersects
 
 
 Version 1.11.0 : 21/01/16
 ================
 
-- Nombre de caractères des échelles réduit au maximum sur les
-axes pour les modes "concis" si le nombre de décimales n'est pas
-imposé.
+- Nombre de caractÃ¨res des Ã©chelles rÃ©duit au maximum sur les
+axes pour les modes "concis" si le nombre de dÃ©cimales n'est pas
+imposÃ©.
 Format "le plus concis possible".
 - Classe QtExtStringNumberFormatComboBox.
 
@@ -413,17 +420,17 @@ Version 1.3.0 : 25/09/14
 Version 1.2.0 : 17/09/14
 ===============
 
-- Affichage optionnel de la légende de la sélection d'un graphique.
+- Affichage optionnel de la lÃ©gende de la sÃ©lection d'un graphique.
 
 
 Version 1.1.0 : 25/06/14
 ===============
 
-- QwtChartPanel::addPlotItem : correctif de bogue : le bouton "légende" est
-enfoncé si la courbe est visible.
+- QwtChartPanel::addPlotItem : correctif de bogue : le bouton "lÃ©gende" est
+enfoncÃ© si la courbe est visible.
 - QwtHistogramChartPanel::legendCheckedCallback : correctif de bogue :
-l'ensemble des classes réagissent à chaque bouton de légende.
-Méthodes QwtExtendedMultiBarChart::set/isVisible.
+l'ensemble des classes rÃ©agissent Ã  chaque bouton de lÃ©gende.
+MÃ©thodes QwtExtendedMultiBarChart::set/isVisible.
 - QwtExtendedPlotZoomer : constructeurs. Correctif de bogue. Le panning
 annulait le zoom en cours => initMousePattern (2).
 
@@ -431,7 +438,7 @@ annulait le zoom en cours => initMousePattern (2).
 Version 1.0.0 : 03/06/14
 ===============
 
-- Remise en service des méthodes QwtChartPanel::getSelectedCurve et
+- Remise en service des mÃ©thodes QwtChartPanel::getSelectedCurve et
 QwtPlotCoordinatesPicker::getSelectedCurve.
 - Suppression du code Qwt 5.x.
 
@@ -451,7 +458,7 @@ Version 0.50.0 : 10/02/14
 Version 0.49.0 : 13/12/13
 ================
 
-RESTE A IMPLEMENTER la sélection au rectangle élastique pour les barres
+RESTE A IMPLEMENTER la sÃ©lection au rectangle Ã©lastique pour les barres
 d'histogramme.
 
 - TK_Variants v 1.33.0.
@@ -464,14 +471,14 @@ Correctif bogue QwtPlotCoordinatesPicker::operator = (return *this).
 Version 0.48.0 : 17/10/13
 ================
 
-RESTE A IMPLEMENTER la sélection au rectangle élastique pour les barres
+RESTE A IMPLEMENTER la sÃ©lection au rectangle Ã©lastique pour les barres
 d'histogramme.
 
 - TK_Variants v 1.31.0.
 
 - Portage Qwt 6.1.0
-- Suppression canvaspicker (qui était obsolète) et QwtGenericChartPanel
-(inutilisé).
+- Suppression canvaspicker (qui Ã©tait obsolÃ¨te) et QwtGenericChartPanel
+(inutilisÃ©).
 - Suppression code Qwt < 5.2.0
 
 Corrections de bogues :
@@ -479,15 +486,15 @@ Corrections de bogues :
 correctif de bogue concernant la valeur de retour de autoScale. Ce bogue
 existait il sous Qwt 5.x ?
 - QwtPlotCoordinatesPicker::setSelectionMode : plantage en mode
-interpolation linéaire lorsque la courbe était sélectionnée via les modes
+interpolation linÃ©aire lorsque la courbe Ã©tait sÃ©lectionnÃ©e via les modes
 POINT ou RUBBER_BAND.
 - tests/QtCurvesMainWindow : mise en place d'un contournement de bogue dans
-la classe QtCurveView (méthodes mouseXXXEvent) : on pouvait redimensionner les
-fenêtres MDI via drag sur le clic gauche depuis la légende des graphiques.
+la classe QtCurveView (mÃ©thodes mouseXXXEvent) : on pouvait redimensionner les
+fenÃªtres MDI via drag sur le clic gauche depuis la lÃ©gende des graphiques.
 Correctif pas parfait, mais finition difficile car repose sur du Qt non
 surchargeable.
 
-Nouveautés :
+NouveautÃ©s :
 - Classe utilitaire QwtUtilities.
 - Support des graphiques type histogrammes
 => classes Qwt*Histogram*, QwtExtendedMultiBarChart.
@@ -521,42 +528,42 @@ Version 0.43.0 : 20/12/12
 Version 0.42.0 : 30/10/12
 ================
 
-- TK_Variants v 1.22.0 : Qt 4.7.4, arrêt Qt 3.3.6.
+- TK_Variants v 1.22.0 : Qt 4.7.4, arrÃªt Qt 3.3.6.
 - Cible RedHat_6_x86_64.
 
 
 Version 0.41.0 : 20/03/12
 ================
 
-Suite à des problèmes de calcul automatique des axes, et une difficultée à
-maintenir des sources communs à Qwt 5 et Qwt 6, réintegration des sources de
+Suite Ã  des problÃ¨mes de calcul automatique des axes, et une difficultÃ©e Ã 
+maintenir des sources communs Ã  Qwt 5 et Qwt 6, rÃ©integration des sources de
 la version 0.39.0.
-Le support de la version 6 de Qwt est récupérable avec les sources de la
-version 0.40.0 de cette bibliothèque.
+Le support de la version 6 de Qwt est rÃ©cupÃ©rable avec les sources de la
+version 0.40.0 de cette bibliothÃ¨que.
 
 - TK_Variants v 1.21.0
 
 
-Version 0.40.0 : 06/01/12 (premier déploiement le 24/11/11)
+Version 0.40.0 : 06/01/12 (premier dÃ©ploiement le 24/11/11)
 ================
 
-Rem : redéploiement effectué le 06/01/12 suite à réinsertion d'une ligne de
-code enlevée par erreur dans le constructeur de QwtChartPanel (rechercher
-06/01/12). Cette version de la bibliothèque n'était pas encore utilisée.
+Rem : redÃ©ploiement effectuÃ© le 06/01/12 suite Ã  rÃ©insertion d'une ligne de
+code enlevÃ©e par erreur dans le constructeur de QwtChartPanel (rechercher
+06/01/12). Cette version de la bibliothÃ¨que n'Ã©tait pas encore utilisÃ©e.
 
 - TK_Variants v 1.20.0 (TkUtil v 2.26.0, QtUtil v 2.34.0)
-- Début de portage Qwt v 6.0.1.
-Problèmes rencontrés et en suspend :
+- DÃ©but de portage Qwt v 6.0.1.
+ProblÃ¨mes rencontrÃ©s et en suspend :
 	- Maintien du rapport d'aspect lors des impressions.
-	- Lors d'opérations de zoom ou sélection par rectangle élastique, 
-	l'évènement de déplacement du curseur avec bouton gauche enfoncé est bien
-	pris en compte pour le tracé élastique. Mais il est également traité par
+	- Lors d'opÃ©rations de zoom ou sÃ©lection par rectangle Ã©lastique, 
+	l'Ã©vÃ¨nement de dÃ©placement du curseur avec bouton gauche enfoncÃ© est bien
+	pris en compte pour le tracÃ© Ã©lastique. Mais il est Ã©galement traitÃ© par
 	ailleurs et provoque le redimensionnement du widget du graphique. A
-	désactiver.
-	Ce problème existe également sous Qwt 5.2.0, mais n'existe pas dans le
-	cadre d'un projet utilisant cette API. Principale différence : les
-	fenêtres graphiques héritent ici de QMdiSubWindow, alors que dans l'autre
-	projet elles héritent de QWidget puis sont attachées ensuite à un parent
+	dÃ©sactiver.
+	Ce problÃ¨me existe Ã©galement sous Qwt 5.2.0, mais n'existe pas dans le
+	cadre d'un projet utilisant cette API. Principale diffÃ©rence : les
+	fenÃªtres graphiques hÃ©ritent ici de QMdiSubWindow, alors que dans l'autre
+	projet elles hÃ©ritent de QWidget puis sont attachÃ©es ensuite Ã  un parent
 	de type QMdiSubWindow.
 - Suppression de la classe CanvasPicker.
 
@@ -610,7 +617,7 @@ Version 0.33.0 : 01/09/10
 - TK_Variants v 1.9.0
 - TkUtil 2.20.0
 - QtUtil 2.27.0
-- Arrêt déploiement Qt 4.4.1
+- ArrÃªt dÃ©ploiement Qt 4.4.1
 - Remplacement #include "*.h" par #include <*.h>
 
 
@@ -656,7 +663,7 @@ de Qwt 5.2.0 (incompatibilite QwpPlotRescaler/QwtPlotPanner).
 modification du mode de selection => icone grisee, moins trompeuse pour les
 utilisateurs.
 
-REM : Correspond à la version 0.27.0 du module QwtCharts sous Toolkits.
+REM : Correspond Ã  la version 0.27.0 du module QwtCharts sous Toolkits.
 
 
 Version 0.29.0 : 11/12/09
@@ -753,9 +760,9 @@ interpolation lineaire.
 Version 0.22.0 : 07/05/09
 ================
 
-Version 5.2.0 de Qwt patchée par CP pour correction de bogue lors de l'écriture
-du titre des axes des ordonnées.
-Le fichier correctif est sauvegardé dans le répertoire data/qwt.
+Version 5.2.0 de Qwt patchÃ©e par CP pour correction de bogue lors de l'Ã©criture
+du titre des axes des ordonnÃ©es.
+Le fichier correctif est sauvegardÃ© dans le rÃ©pertoire data/qwt.
 
 Les options d'impression proposees par defaut (imprimante/fichier, nom du
 fichier) sont celles de la dernieres impression realisee.
@@ -764,10 +771,10 @@ fichier) sont celles de la dernieres impression realisee.
 Version 0.21.0 : 30/04/09
 ================
 
-Version 5.2.0 de Qwt (compatibilité maintenue avec les versions précédentes).
+Version 5.2.0 de Qwt (compatibilitÃ© maintenue avec les versions prÃ©cÃ©dentes).
 
 - Correction de bogue dans QwtChartPanel::print lorsque l'impression est
-dirigée vers une imprimante.
+dirigÃ©e vers une imprimante.
 - Gestion du rapport d'aspect (version de Qwt >= 5.2.0).
 Il demeure des problemes, notamment lors d'impressions papier, PS et PDF (cas
 ou l'on ne passe pas par des QImage). Le probleme est que Qt 4.3.2 ne propose 
@@ -816,16 +823,16 @@ Version 0.16.0 : 09/03/09
 
 - Utilise Qt.Util version 2.15.0 (classe QtExclusiveActionGroup)
 
-- Nouvelles fonctionnalitées liées à la sélection :
-	- Méthodes QwtChartPanel::getSelectedCurve, getSelectionArea et 
+- Nouvelles fonctionnalitÃ©es liÃ©es Ã  la sÃ©lection :
+	- MÃ©thodes QwtChartPanel::getSelectedCurve, getSelectionArea et 
 	getSelectionExtrema.
 	- QwtPlotCoordinatesPicker :
-		- Modes de sélection CURVE, LINEAR_INTERPOLATION
+		- Modes de sÃ©lection CURVE, LINEAR_INTERPOLATION
 		- getSelectedCurve devient publique.
 		- _selectionArea devient _viewportSelectionArea
-		- Méthodes getSelectionArea et getSelectionExtrema.
+		- MÃ©thodes getSelectionArea et getSelectionExtrema.
 	- QwtChartsManager utilise QtExclusiveActionGroup et supporte 
-	les modes de sélection QwtPlotCoordinatesPicker::CURVE et
+	les modes de sÃ©lection QwtPlotCoordinatesPicker::CURVE et
 	LINEAR_INTERPOLATION.
 
 
@@ -834,8 +841,8 @@ Version 0.15.0 : 16/02/09
 
 - Les classes QtActionAutoLock, QtFontPanel, QtPaintAttributes et QtPenPanel
 sont transferees dans le module QtUtil.
-- QwtCurveChartPanel::adjustChart : autocorrection des min et max affichés en
-abscisses et ordonnées lorsque les min et max des courbes sont identiques ou
+- QwtCurveChartPanel::adjustChart : autocorrection des min et max affichÃ©s en
+abscisses et ordonnÃ©es lorsque les min et max des courbes sont identiques ou
 presque.
 - QwtAxisOptionsPanel : le nombre de decimales maximum affichable passe a 15.
 Davantage de precision dans l'affichage et la recuperation des valeurs
@@ -860,7 +867,7 @@ derivees de choisir le type des courbes crees.
 	n'etaient plus affichees.
 	- Correctif de bogue dans le constructeur : initialisation de la police de
 	caracteres a celle reellement utilisee par defaut (bogue Qwt 5.0.2 ?).
-- Les classes de panneau d'édition des differents composants des graphiques
+- Les classes de panneau d'Ã©dition des differents composants des graphiques
 derivent de QwtChartPanel::QwtChartEditionPanel. Ces panneaux sont notifies
 de l'ajout ou de la suppression de courbes.
 - QwtChartOptionsPanel et Dialog :
@@ -899,9 +906,9 @@ Version 0.12.0 : 29/10/08
 	graphe etaient considerees comme actives et executaient le callback.
 	- Raccourcis clavier sur undo/redo zoom.
 - QwtPlotCoordinatesPicker :
-	- Adaptations pour compatitbilité avec le panner.
+	- Adaptations pour compatitbilitÃ© avec le panner.
 	- widgetMouseMoveEvent : Correction de bogue (test sur le bouton de la
-	souris qui est enfoncé).
+	souris qui est enfoncÃ©).
 
 
 Version 0.10.0 : 25/06/08
@@ -948,7 +955,7 @@ Correctif dans updateFromPlot.
 Version 0.7.0 : 06/05/08
 ===============
 
-- QwtPlotCoordinatesPicker : gestion du mode de sélection (point unique/
+- QwtPlotCoordinatesPicker : gestion du mode de sÃ©lection (point unique/
 ensemble de points selectionnes par rectangle englobant).
 Coloration de la selection.
 - QwtChartPanel : undoZoom et redoZoom.
@@ -963,7 +970,7 @@ Version 0.6.0 : 05/05/08
 - Classe QwtPlotCoordinatesPicker en remplacement de la classe CanvasPicker
 (maintenue).
 - QwtChartPanel utilise la classe QwtPlotCoordinatesPicker pour afficher les
-coordonnées survolées.
+coordonnÃ©es survolÃ©es.
 - La classe QwtCurveChartPanel utilise la classe QwtPlotCoordinatesPicker a la
 place de la classe CanvasPicker.
 
@@ -986,7 +993,7 @@ Version 0.5.0 : XX/04/08
 - Integration dans Toolkits.
 
 
-Versions antérieures :
+Versions antÃ©rieures :
 ======================
 
 Voir fichier versions.old.
