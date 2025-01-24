@@ -330,27 +330,27 @@ void QwtExtendedMultiBarChart::drawSample (
 	switch (getHistogramStyle ( ))
 	{
 		case QwtExtendedMultiBarChart::STYLE_GROUPED	:
-		case QwtExtendedMultiBarChart::STYLE_STACKED	:
-		QwtPlotMultiBarChart::drawSample (
-			painter, xMap, yMap, canvasRect, boundingInterval, index, sample);
+		case QwtExtendedMultiBarChart::STYLE_STACKED	: QwtPlotMultiBarChart::drawSample (painter, xMap, yMap, canvasRect, boundingInterval, index, sample);
 		break;
 		case QwtExtendedMultiBarChart::STYLE_OVERLAPPED	:
 		{
-			double	sampleWidth	= Qt::Vertical == orientation ( ) ?
-				QwtPlotMultiBarChart::sampleWidth (xMap, canvasRect.width ( ), 
-								boundingInterval.width(), sample.value) :
-				QwtPlotMultiBarChart::sampleWidth (yMap, canvasRect.height ( ),
-								boundingInterval.width(), sample.value);
-			drawOverlappedBars (
-				painter, xMap, yMap, canvasRect, index, sampleWidth, sample);
+			double	sampleWidth	= Qt::Vertical == orientation ( ) ? 
+				QwtPlotMultiBarChart::sampleWidth (xMap, canvasRect.width ( ),  boundingInterval.width(), sample.value) :
+				QwtPlotMultiBarChart::sampleWidth (yMap, canvasRect.height ( ), boundingInterval.width(), sample.value);
+			const size_t	numSamples	= dataSize ( );				// CP v 5.3.2 : nombre de classes
+			const size_t	numSeries	= _visibleSeries.size ( );	// CP v 5.3.2 : nombre de séries à superposer
+			if (1 == numSamples)
+			{	// CP v 5.3.2 : si plusieurs séries on prévoit la largeur d'une barre pour les décalages de superpositions :
+				sampleWidth	= 1 == numSeries ? (canvasRect.width ( ) - (numSamples + 1) * spacing ( )) / numSamples : (canvasRect.width ( ) - (numSamples + 2) * spacing ( )) / (numSamples + 1);
+			}	// if (1 == numSamples)
+			drawOverlappedBars (painter, xMap, yMap, canvasRect, index, sampleWidth, sample);
 		}
 		break;
 		default	:
 		{
 			UTF8String	mess (charset);
-mess << "QwtExtendedMultiBarChart::drawSample, style non supporté ("
-     << (unsigned long)getHistogramStyle ( ) << ").";
-		ConsoleOutput::cout ( ) << mess << co_endl;
+			mess << "QwtExtendedMultiBarChart::drawSample, style non supporté (" << (unsigned long)getHistogramStyle ( ) << ").";
+			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 	}	// switch (getHistogramStyle ( ))
 }	// QwtExtendedMultiBarChart::drawSample

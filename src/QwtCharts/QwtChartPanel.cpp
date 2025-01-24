@@ -89,8 +89,7 @@ static const Charset	charset ("àéèùô");
 
 
 
-static void absExtrema (
-		const QwtSeriesData<QwtSetSample>* data, double& min, double& max)
+static void absExtrema (const QwtSeriesData<QwtSetSample>* data, double& min, double& max)
 {
 	if (0 == data)
 		return;
@@ -102,15 +101,37 @@ static void absExtrema (
 		min	= sample.value < min ? sample.value : min;
 		max	= sample.value > max ? sample.value : max;
 	}	// for (size_t i = 0; i < count; i++)
+	
+	if (1 == count)
+	{	// CP v 5.3.2 : min == max => absence d'échelle au niveau des abscisses. Ce fix améliore la chose sans vraiment être satisfaisant :(
+		min	*= 0.8;
+		max	*= 1.2;
+	}	// if (1 == count)
 }	// absExtrema
 
 
-static void ordExtrema (
-		const QwtSeriesData<QwtSetSample>* data, double& min, double& max)
+static void ordExtrema (const QwtSeriesData<QwtSetSample>* data, double& min, double& max)
 {
 	if (0 == data)
 		return;
 
+	// CP v 5.3.2 : correctif recherche des extrema au niveau des ordonnées => on parcourt toutes les séries
+	const int	numClasses	= data->size ( );
+	for (int c = 0; c < numClasses; c++)
+	{
+		QwtSetSample	sample	= data->sample (c);
+
+		for (int s = 0; s < sample.set.size ( ); s++)
+		{
+			min	= min > sample.set [s] ? sample.set [s] : min;
+			max	= max < sample.set [s] ? sample.set [s] : max;
+		}	// for (int c = 0; c < numClasses; c++)
+	}	// 	for (int i = 0; i < numClasses; i++)
+	if (min == max)
+	{	// CP v 5.3.2 : min == max => absence d'échelle au niveau des abscisses. Ce fix amméliore la chose sans vraiment être satisfaisant :(
+		min	= 0.;
+	}	// if (1 == count)
+/* OLD CODE
 	const size_t	count	= data->size ( );
 	for (size_t i = 0; i < count; i++)
 	{
@@ -121,6 +142,7 @@ static void ordExtrema (
 		min	= value < min ? value : min;
 		max	= value > max ? value : max;
 	}	// for (size_t i = 0; i < count; i++)
+! OLD CODE */
 }	// ordExtrema
 
 
@@ -219,8 +241,7 @@ QwtChartPanel& QwtChartPanel::QwtChartSpecificPanelCreator::getChartPanel ( )
 // ---------------------------------------------------------------------------
 
 QwtChartPanel::DataPaintAttributes::DataPaintAttributes (QwtPlotItem* plotItem, const PaintAttributes& pen)
-	: _plotItem (plotItem), _name ( ), _pen (pen),
-	  _fgValid (true), _bgValid (true)
+	: _plotItem (plotItem), _name ( ), _pen (pen),  _fgValid (true), _bgValid (true)
 {
 	if (0 != _plotItem)
 		_name	= _plotItem->title ( ).text ( ).toStdString ( );
@@ -228,21 +249,18 @@ QwtChartPanel::DataPaintAttributes::DataPaintAttributes (QwtPlotItem* plotItem, 
 
 
 QwtChartPanel::DataPaintAttributes::DataPaintAttributes (const string& name, const PaintAttributes& pen)
-	: _plotItem (0), _name (name), _pen (pen),
-	  _fgValid (true), _bgValid (true)
+	: _plotItem (0), _name (name), _pen (pen), _fgValid (true), _bgValid (true)
 {
 }	// DataPaintAttributes::DataPaintAttributes
 
 
 QwtChartPanel::DataPaintAttributes::DataPaintAttributes (const QwtChartPanel::DataPaintAttributes& copied)
-	: _plotItem (copied._plotItem), _name (copied._name), _pen (copied._pen),
-	  _fgValid (copied._fgValid), _bgValid (copied._bgValid)
+	: _plotItem (copied._plotItem), _name (copied._name), _pen (copied._pen), _fgValid (copied._fgValid), _bgValid (copied._bgValid)
 {
 }	// DataPaintAttributes::DataPaintAttributes
 
 
-QwtChartPanel::DataPaintAttributes&
-				QwtChartPanel::DataPaintAttributes::operator = (const QwtChartPanel::DataPaintAttributes& copied)
+QwtChartPanel::DataPaintAttributes& QwtChartPanel::DataPaintAttributes::operator = (const QwtChartPanel::DataPaintAttributes& copied)
 {
 	if (&copied != this)
 	{
@@ -370,10 +388,8 @@ QwtChartPanel::QwtChartPanel (QWidget* parent)
 	CHECK_NULL_PTR_ERROR (_coordsPicker)
 	_coordsPicker->setChartPanel (this); */
 
-	QwtPlotCanvas*	canvas	=
-						dynamic_cast<QwtPlotCanvas*>(_plotWidget->canvas ( ));
-	_zoomer	= new QwtExtendedPlotZoomer (
-						QwtPlot::xBottom, QwtPlot::yLeft, canvas);
+	QwtPlotCanvas*	canvas	= dynamic_cast<QwtPlotCanvas*>(_plotWidget->canvas ( ));
+	_zoomer	= new QwtExtendedPlotZoomer (QwtPlot::xBottom, QwtPlot::yLeft, canvas);
 	CHECK_NULL_PTR_ERROR (_zoomer)
 	_zoomer->setRubberBand (QwtPicker::RectRubberBand);
 	_zoomer->setRubberBandPen (QColor (Qt::green));
@@ -384,8 +400,7 @@ QwtChartPanel::QwtChartPanel (QWidget* parent)
 //						Qt::ControlModifier);
 //	_zoomer->setMousePattern (QwtEventPattern::MouseSelect3, Qt::RightButton);
 	_zoomer->setEnabled (false);
-	connect (_zoomer, SIGNAL (zoomed (const QRectF&)), this,
-	         SLOT (zoomCallback_Qwt6 (const QRectF&)));
+	connect (_zoomer, SIGNAL (zoomed (const QRectF&)), this, SLOT (zoomCallback_Qwt6 (const QRectF&)));
 
 	// QwtPlotRescaler::Fitting : le graphique utilise tout l'espace, et 
 	// utilise la politique d'expansion => tout le graphique n'est pas
@@ -399,8 +414,7 @@ QwtChartPanel::QwtChartPanel (QWidget* parent)
 	// circonstances la totalité des courbes, sauf spécification contraire de
 	// l'utilisateur.
 	// Ce rescaler est inactivé par défaut.
-	_rescaler	= new QwtPlotRescaler (
-		_plotWidget->canvas( ), QwtPlot::xBottom, QwtPlotRescaler::Fitting);
+	_rescaler	= new QwtPlotRescaler (_plotWidget->canvas( ), QwtPlot::xBottom, QwtPlotRescaler::Fitting);
 	_rescaler->setExpandingDirection (QwtPlotRescaler::ExpandBoth);
 	_rescaler->setAspectRatio (1.);
 	_rescaler->setEnabled (false);
@@ -488,8 +502,7 @@ void QwtChartPanel::setDisplayMode (DISPLAY_MODE mode)
 	}	// if (false == isDisplayModeAllowed (mode))
 
 	// Ugly code, to redefine :
-	QwtPlotCurveCoordinatesPicker*	curvePicker	=
-		dynamic_cast<QwtPlotCurveCoordinatesPicker*>(&getCoordinatesPicker ( ));
+	QwtPlotCurveCoordinatesPicker*	curvePicker	= dynamic_cast<QwtPlotCurveCoordinatesPicker*>(&getCoordinatesPicker ( ));
 	if (0 != curvePicker)
 		curvePicker->setDisplayMode ((QwtChartPanel::DISPLAY_MODE)mode);
 
@@ -595,10 +608,8 @@ bool QwtChartPanel::getAbscissaScale (double& min, double& max, bool& autoScale)
 			vector<QwtPlotItem*>::iterator	iti	= _plotItems.begin ( );
 			for ( ; _plotItems.end ( ) != iti; iti++)
 			{
-				QwtPlotCurve*				curve		=
-								dynamic_cast<QwtPlotCurve*>(*iti);
-				QwtPlotMultiBarChart*	barChart	=
-								dynamic_cast<QwtPlotMultiBarChart*>(*iti);
+				QwtPlotCurve*				curve	= dynamic_cast<QwtPlotCurve*>(*iti);
+				QwtPlotMultiBarChart*	barChart	= dynamic_cast<QwtPlotMultiBarChart*>(*iti);
 				if (0 != curve)
 				{
 					double	mn	= curve->minXValue ( );
@@ -608,8 +619,7 @@ bool QwtChartPanel::getAbscissaScale (double& min, double& max, bool& autoScale)
 				}	// if (0 != curve)
 				else if (0 != barChart)
 				{
-					const QwtSeriesData<QwtSetSample>*	data	=
-														barChart->data ( );
+					const QwtSeriesData<QwtSetSample>*	data	= barChart->data ( );
 					absExtrema (data, min, max);
 				}	// else if (0 != barChart)
 			}	// for ( ; _plotItems.end ( ) != iti; iti++)
@@ -644,10 +654,8 @@ bool QwtChartPanel::getVisibleAbscissaScale  (double& min, double& max)
 		if (false == (*iti)->isVisible ( ))
 			continue;
 
-		QwtPlotCurve*				curve		=
-								dynamic_cast<QwtPlotCurve*>(*iti);
-		QwtPlotMultiBarChart*	barChart	=
-								dynamic_cast<QwtPlotMultiBarChart*>(*iti);
+		QwtPlotCurve*				curve	= dynamic_cast<QwtPlotCurve*>(*iti);
+		QwtPlotMultiBarChart*	barChart	= dynamic_cast<QwtPlotMultiBarChart*>(*iti);
 		if (0 != curve)
 		{
 			ok	= true;
@@ -668,8 +676,7 @@ bool QwtChartPanel::getVisibleAbscissaScale  (double& min, double& max)
 }	// QwtChartPanel::getVisibleAbscissaScale
 
 
-void QwtChartPanel::setAbscissaScale (
-						double min, double max, bool autoScale, double tickStep)
+void QwtChartPanel::setAbscissaScale (double min, double max, bool autoScale, double tickStep)
 {
 	_abscissaScale._auto		= autoScale;
 	_abscissaScale._tickStep	= tickStep;
@@ -713,10 +720,8 @@ bool QwtChartPanel::getOrdinateScale (double& min, double& max, bool& autoScale)
 			vector<QwtPlotItem*>::iterator	iti	= _plotItems.begin ( );
 			for ( ; _plotItems.end ( ) != iti; iti++)
 			{
-				QwtPlotCurve*			curve	=
-								dynamic_cast<QwtPlotCurve*>(*iti);
-				QwtPlotMultiBarChart*	barChart	=
-								dynamic_cast<QwtPlotMultiBarChart*>(*iti);
+				QwtPlotCurve*			curve		= dynamic_cast<QwtPlotCurve*>(*iti);
+				QwtPlotMultiBarChart*	barChart	= dynamic_cast<QwtPlotMultiBarChart*>(*iti);
 				if (0 != curve)
 				{
 					double	mn	= curve->minYValue ( );
@@ -726,8 +731,7 @@ bool QwtChartPanel::getOrdinateScale (double& min, double& max, bool& autoScale)
 				}	// if (0 != curve)
 				else if (0 != barChart)
 				{
-					const QwtSeriesData<QwtSetSample>*	data	=
-														barChart->data ( );
+					const QwtSeriesData<QwtSetSample>*	data	= barChart->data ( );
 					ordExtrema (data, min, max);
 				}	// else if (0 != barChart)
 			}	// for ( ; _plotItems.end ( ) != iti; iti++)
@@ -761,10 +765,8 @@ bool QwtChartPanel::getVisibleOrdinateScale  (double& min, double& max)
 		if (false == (*iti)->isVisible ( ))
 			continue;
 
-		QwtPlotCurve*				curve		=
-								dynamic_cast<QwtPlotCurve*>(*iti);
-		QwtPlotMultiBarChart*	barChart	=
-								dynamic_cast<QwtPlotMultiBarChart*>(*iti);
+		QwtPlotCurve*				curve	= dynamic_cast<QwtPlotCurve*>(*iti);
+		QwtPlotMultiBarChart*	barChart	= dynamic_cast<QwtPlotMultiBarChart*>(*iti);
 		if (0 != curve)
 		{
 			ok	= true;
@@ -785,8 +787,7 @@ bool QwtChartPanel::getVisibleOrdinateScale  (double& min, double& max)
 }	// QwtChartPanel::getVisibleOrdinateScale
 
 
-void QwtChartPanel::setOrdinateScale (
-						double min, double max, bool autoScale, double tickStep)
+void QwtChartPanel::setOrdinateScale (double min, double max, bool autoScale, double tickStep)
 {
 	_ordinateScale._auto		= autoScale;
 	_ordinateScale._tickStep	= tickStep;
@@ -794,12 +795,8 @@ void QwtChartPanel::setOrdinateScale (
 	{
 		_ordinateScale._min			= min;
 		_ordinateScale._max			= max;
-		getPlot ( ).setAxisScale (
-					QwtPlot::yLeft, _ordinateScale._min, _ordinateScale._max,
-					tickStep);
-		getPlot ( ).setAxisScale (
-					QwtPlot::yRight, _ordinateScale._min, _ordinateScale._max,
-					tickStep);
+		getPlot ( ).setAxisScale (QwtPlot::yLeft, _ordinateScale._min, _ordinateScale._max, tickStep);
+		getPlot ( ).setAxisScale (QwtPlot::yRight, _ordinateScale._min, _ordinateScale._max, tickStep);
 		_ordinateScale._updated	= true;
 	}	// if (false == autoScale)
 	else
@@ -889,20 +886,17 @@ void QwtChartPanel::showLegend (bool show, QwtPlot::LegendPosition pos)
 		legend->setFrameStyle (QFrame::Box | QFrame::Plain);
 		legend->setLineWidth (0);
 		legend->setMidLineWidth (0);
-		connect (legend, SIGNAL (checked  (const QVariant&, bool, int)),
-				this, SLOT (legendCheckedCallback(const QVariant&, bool, int)));
+		connect (legend, SIGNAL (checked  (const QVariant&, bool, int)), this, SLOT (legendCheckedCallback(const QVariant&, bool, int)));
 		legend->setDefaultItemMode 	(_legendCheckable);
 		// Nous spécifions tous les paramètres de légende :
 //		legend->setDisplayPolicy (QwtLegend::NoIdentifier,
 		// On insère la légende en premier afin que itemToInfo fonctionne.
 		getPlot ( ).insertLegend (legend, pos);
-		const QwtPlotItemList&	items	=
-						getPlot ( ).itemList (QwtPlotItem::Rtti_PlotCurve);
+		const QwtPlotItemList&	items	= getPlot ( ).itemList (QwtPlotItem::Rtti_PlotCurve);
 		for (QwtPlotItemIterator it = items.begin( ); items.end( ) != it; it++)
 		{
 			CHECK_NULL_PTR_ERROR (*it)
-			QWidget*		widget	=
-							legend->legendWidget (getPlot ( ).itemToInfo (*it));
+			QWidget*		widget	= legend->legendWidget (getPlot ( ).itemToInfo (*it));
 			QwtLegendLabel*	label	= dynamic_cast<QwtLegendLabel*>(widget);
 			CHECK_NULL_PTR_ERROR (label)
 			label->setChecked ((*it)->isVisible ( ));
@@ -931,8 +925,7 @@ void QwtChartPanel::setLegendFrameWidth (int width)
 
 int QwtChartPanel::getLegendMargin ( ) const
 {
-	const QWidget*		widget	=
-					0 == getLegend ( ) ?  0 : getLegend ( )->contentsWidget( );
+	const QWidget*		widget	= 0 == getLegend ( ) ?  0 : getLegend ( )->contentsWidget( );
 	const QLayout*		layout	= 0 == widget ? 0 : widget->layout ( );
 
 	int	left	= 0, top	= 0, right	= 0, bottom	= 0;
@@ -957,8 +950,7 @@ void QwtChartPanel::setLegendMargin (int margin)
 
 	if (0 == getLegend ( ))
 		throw Exception ("Modification des marges d'une légende : absence de légende.");
-	QWidget*	widget	= 0 == getLegend ( ) ?
-						  0 : getLegend ( )->contentsWidget ( );
+	QWidget*	widget	= 0 == getLegend ( ) ? 0 : getLegend ( )->contentsWidget ( );
 	QLayout*	layout	= 0 == widget ? 0 : widget->layout ( );
 
 	if (0 != layout)
@@ -998,8 +990,7 @@ void QwtChartPanel::setLegendCheckable (bool checkable)
 {
 	if (checkable == _legendCheckable)
 		return;
-	_legendCheckable	= true == checkable ?
-						  QwtLegendData::Checkable : QwtLegendData::ReadOnly;
+	_legendCheckable	= true == checkable ? QwtLegendData::Checkable : QwtLegendData::ReadOnly;
 	if (0 != getLegend ( ))
 	{
 		// Changement de mode pour les items : nécessite de reconstruire la
@@ -1024,14 +1015,12 @@ void QwtChartPanel::showSelectionLegend (bool show)
 		return;
 
 	_showSelectionLegend	 = show;
-	QwtPlotCurveCoordinatesPicker*	picker	=
-					dynamic_cast<QwtPlotCurveCoordinatesPicker*>(_coordsPicker);
+	QwtPlotCurveCoordinatesPicker*	picker	= dynamic_cast<QwtPlotCurveCoordinatesPicker*>(_coordsPicker);
 	if ((0 != picker) && (0 != picker->getSelectionRepresentation ( )))
 	{
 		QwtPlot*	plot	= picker->getSelectionRepresentation ( )->plot ( );
 		picker->getSelectionRepresentation ( )->detach ( );
-		picker->getSelectionRepresentation ( )->setItemAttribute (
-													QwtPlotItem::Legend, show);
+		picker->getSelectionRepresentation ( )->setItemAttribute (QwtPlotItem::Legend, show);
 		if (0 != plot)
 		{
 			picker->getSelectionRepresentation ( )->attach (plot);
@@ -1056,11 +1045,9 @@ void QwtChartPanel::setLegendCurveWidth (int width)
 		if (0 != getLegend ( ))
 		{
 			QList<QWidget*>		items;
-			QwtPlotItemList	list	=
-						getPlot ( ).itemList (QwtPlotItem::Rtti_PlotCurve);
+			QwtPlotItemList	list	= getPlot ( ).itemList (QwtPlotItem::Rtti_PlotCurve);
 			for (int i = 0; i < list.size ( ); i++)
-				items.push_back (getLegend ( )->legendWidget (
-										getPlot ( ).itemToInfo (list [i])));
+				items.push_back (getLegend ( )->legendWidget (getPlot ( ).itemToInfo (list [i])));
 /*
 			for (size_t i = 0; i < items.size ( ); i++)
 			{
@@ -1078,8 +1065,7 @@ void QwtChartPanel::setLegendCurveWidth (int width)
 
 unsigned char QwtChartPanel::getScaleLabelPrecision ( ) const
 {
-	const QwtExtendedScaleDraw*	scaleDraw	=
-		dynamic_cast<const QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw(0));
+	const QwtExtendedScaleDraw*	scaleDraw	= dynamic_cast<const QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw(0));
 
 	if (0 == scaleDraw)
 		throw Exception ("Précision utilisée lors des conversions valeur -> texte inaccessible, la classe utilisée n'est pas du type QwtExtendedScaleDraw.");
@@ -1092,8 +1078,7 @@ void QwtChartPanel::setScaleLabelPrecision (unsigned char precision)
 {
 	for (int i = QwtPlot::yLeft; i < QwtPlot::axisCnt; i++)
 	{
-		QwtExtendedScaleDraw*	scaleDraw	=
-			dynamic_cast<QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw (i));
+		QwtExtendedScaleDraw*	scaleDraw	= dynamic_cast<QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw (i));
 
 		if (0 == scaleDraw)
 			throw Exception ("Précision utilisée lors des conversions valeur -> texte inaccessible, la classe utilisée n'est pas du type QwtExtendedScaleDraw.");
@@ -1106,8 +1091,7 @@ void QwtChartPanel::setScaleLabelPrecision (unsigned char precision)
 
 char QwtChartPanel::getScaleLabelFormat ( ) const
 {
-	const QwtExtendedScaleDraw*	scaleDraw	=
-		dynamic_cast<const QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw(0));
+	const QwtExtendedScaleDraw*	scaleDraw	= dynamic_cast<const QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw(0));
 
 	if (0 == scaleDraw)
 		throw Exception ("Format utilisée lors des conversions valeur -> texte inaccessible, la classe utilisée n'est pas du type QwtExtendedScaleDraw.");
@@ -1120,8 +1104,7 @@ void QwtChartPanel::setScaleLabelFormat (char format)
 {
 	for (int i = QwtPlot::yLeft; i < QwtPlot::axisCnt; i++)
 	{
-		QwtExtendedScaleDraw*	scaleDraw	=
-			dynamic_cast<QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw (i));
+		QwtExtendedScaleDraw*	scaleDraw	= dynamic_cast<QwtExtendedScaleDraw*>(getPlot ( ).axisScaleDraw (i));
 
 		if (0 == scaleDraw)
 			throw Exception ("Format utilisée lors des conversions valeur -> texte inaccessible, la classe utilisée n'est pas du type QwtExtendedScaleDraw.");
@@ -1152,28 +1135,21 @@ void QwtChartPanel::setScaleLabelFormat (char format)
  *				d'une dimension du graphique. Un bogue au niveau de l'affichage
  *				est possible au delà de cette zone à risque.
  */
-static bool computeRect (
-				const QPrinter& printer, const QwtPlot& plot, QRect& rect)
+static bool computeRect (const QPrinter& printer, const QwtPlot& plot, QRect& rect)
 {
 	CHECK_NULL_PTR_ERROR (plot.canvas ( ))
-	if ((printer.width ( ) < 100) || (printer.width ( ) > 1E6) ||
-	    (printer.height ( ) < 100) || (printer.height ( ) > 1E6))
+	if ((printer.width ( ) < 100) || (printer.width ( ) > 1E6) || (printer.height ( ) < 100) || (printer.height ( ) > 1E6))
 	{
 		UTF8String	msg (charset);
 		msg << "Impression impossible, dimensions de l'imprimantes invalides ("
-		    << (unsigned long)printer.width ( ) << ", " 
-		    << (unsigned long)printer.height ( ) << ").";
+		    << (unsigned long)printer.width ( ) << ", "   << (unsigned long)printer.height ( ) << ").";
 		throw Exception (msg);
 	}	// if ((printer.width ( ) < 100) || (printer.width ( ) > 1E6) || ...
-	if ((plot.canvas ( )->width ( ) < 100) ||
-	    (plot.canvas ( )->width ( ) > 1E6) ||
-	    (plot.canvas ( )->height ( ) < 100) ||
-	    (plot.canvas ( )->height ( ) > 1E6))
+	if ((plot.canvas ( )->width ( ) < 100) || (plot.canvas ( )->width ( ) > 1E6) || (plot.canvas ( )->height ( ) < 100) || (plot.canvas ( )->height ( ) > 1E6))
 	{
 		UTF8String	msg (charset);
 		msg << "Impression impossible, dimensions du graphique invalides ("
-		    << (unsigned long)plot.canvas ( )->width ( )<< ", " 
-		    << (unsigned long)plot.canvas ( )->height ( ) << ").";
+		    << (unsigned long)plot.canvas ( )->width ( )<< ", "  << (unsigned long)plot.canvas ( )->height ( ) << ").";
 		throw Exception (msg);
 	}	// if ((plot.canvas ( )->width ( ) < 100) || ...
 
@@ -1181,8 +1157,7 @@ static bool computeRect (
 	rect.setCoords (0, 0, printer.width ( ), printer.height ( ));
 
 	// Le rapport hauteur / largeur du graphique, à conserver :
-	double	ratio	= plot.canvas ( )->height ( ) /
-					  (double)plot.canvas ( )->width ( );
+	double	ratio	= plot.canvas ( )->height ( ) / (double)plot.canvas ( )->width ( );
 
 	if (printer.width ( ) >= printer.height ( ))	// Paysage
 	{
@@ -1280,12 +1255,10 @@ bool QwtChartPanel::print (QPrinter& printer)
 			         << "\n"
 			         << "- (Annuler) l'impression ?";
 			switch (QtMessageBox::displayWarningMessage (
-					&getPlot ( ), "Impression : risque d'erreur", question,
-					100, "Imprimer", "Poursuivre", "Annuler"))
+					&getPlot ( ), "Impression : risque d'erreur", question, 100, "Imprimer", "Poursuivre", "Annuler"))
 			{
 				case	0	: 
-					painterRect.setCoords (
-								0, 0, printer.width ( ), printer.height ( ));
+					painterRect.setCoords (0, 0, printer.width ( ), printer.height ( ));
 					break;
 				case	1	: break;
 				default	: return false;
@@ -1510,8 +1483,7 @@ void QwtChartPanel::zoom (double factor)
 
 	// Le QwtPlotZoomer n'est pas notifié des éventuelles translations de la
 	// vue, type panning (on n'est plus centré sur le milieu des courbes,
-	// l'utilisateur a effectué une translation de la vue au bouton central de
-	// la souris).
+	// l'utilisateur a effectué une translation de la vue au bouton central de la souris).
 	// => On récupère les coordonnées du centre de la vue afin de centrer la
 	// future vue sur ce même point.
 	const double	xMin	= absScaleDiv.lowerBound ( );
@@ -1561,8 +1533,7 @@ void QwtChartPanel::adjustScales ( )
 	CHECK_NULL_PTR_ERROR (_rescaler)
 	double	minx	= 0.,	maxx	= 0.;
 	double	miny	= 0.,	maxy	= 0.;
-	if ((false == getVisibleAbscissaScale (minx, maxx)) ||
-	    (false == getVisibleOrdinateScale (miny, maxy)))
+	if ((false == getVisibleAbscissaScale (minx, maxx)) || (false == getVisibleOrdinateScale (miny, maxy)))
 		return;
 
 	if (true == _rescaler->isEnabled ( ))
@@ -1588,8 +1559,7 @@ void QwtChartPanel::adjustScales ( )
 bool QwtChartPanel::zoomUndoable ( ) const
 {
 	CHECK_NULL_PTR_ERROR (_zoomer)
-	if ((1 < _zoomer->zoomStack ( ).size ( )) &&
-	    (0 != _zoomer->zoomRectIndex ( )))
+	if ((1 < _zoomer->zoomStack ( ).size ( )) && (0 != _zoomer->zoomRectIndex ( )))
 		return true;
 
 	return false;
@@ -1607,8 +1577,7 @@ void QwtChartPanel::undoZoom ( )
 bool QwtChartPanel::zoomRedoable ( ) const
 {
 	CHECK_NULL_PTR_ERROR (_zoomer)
-	if ((1 < _zoomer->zoomStack ( ).size ( )) &&
-	    (_zoomer->zoomStack ( ).size ( ) != (_zoomer->zoomRectIndex ( ) + 1)))
+	if ((1 < _zoomer->zoomStack ( ).size ( )) && (_zoomer->zoomStack ( ).size ( ) != (_zoomer->zoomRectIndex ( ) + 1)))
 		return true;
 
 	return false;
@@ -1625,8 +1594,7 @@ void QwtChartPanel::redoZoom ( )
 
 bool QwtChartPanel::isModified ( ) const
 {
-	for (vector<bool>::const_iterator	itm	= _modificationList.begin ( );
-	     _modificationList.end ( ) != itm; itm++)
+	for (vector<bool>::const_iterator	itm	= _modificationList.begin ( ); _modificationList.end ( ) != itm; itm++)
 		if (true == *itm)
 			return true;
 
@@ -1673,8 +1641,7 @@ void QwtChartPanel::dataModified ( )
 	getAbscissaScale (x1, x2, as);
 	getOrdinateScale (y1, y2, as);
 	// La nouvelle reference (etat non zoome) :
-	if ((0 != isValid (x1)) && (0 != isValid (x2)) &&
-	    (0 != isValid (y1)) && (0 != isValid (y2)))
+	if ((0 != isValid (x1)) && (0 != isValid (x2)) && (0 != isValid (y1)) && (0 != isValid (y2)))
 		newStack.push (QRectF (x1, y1, x2 - x1, y2 - y1));
 	else
 		newStack.push (QRectF (0., 0., 1., 1.));
@@ -1697,6 +1664,7 @@ void QwtChartPanel::adjustChart ( )
 	_rescaler->setIntervalHint (QwtPlot::xBottom, interval);
 	_rescaler->setIntervalHint (QwtPlot::xTop, interval);
 	getOrdinateScale (mn, mx, as);
+	mn	= mn == mx ? 0. : mn;	// CP v 5.3.2 : utile dans les cas 1 série/1 classe, min == max => classe plate.
 	interval	= QwtInterval (mn, mx);
 	_rescaler->setIntervalHint (QwtPlot::yLeft, interval);
 	_rescaler->setIntervalHint (QwtPlot::yRight, interval);
@@ -1713,8 +1681,7 @@ void QwtChartPanel::legendCheckedCallback (QwtPlotItem* item, bool checked)
 }	// QwtChartPanel::legendCheckedCallback
 
 
-void QwtChartPanel::legendCheckedCallback (
-							const QVariant& itemInfo, bool checked, int index)
+void QwtChartPanel::legendCheckedCallback (const QVariant& itemInfo, bool checked, int index)
 {
 	QwtPlotItem*	item	= getPlot ( ).infoToItem (itemInfo);
 	if (0 == item)
@@ -1755,16 +1722,14 @@ bool QwtChartPanel::useQImage (const QPrinter& printer)
 		return false;
 
 	File	file (printer.outputFileName ( ).toStdString ( ));
-	if ((0 == strcasecmp (file.getExtension ( ).c_str ( ), "ps")) ||
-	    (0 == strcasecmp (file.getExtension ( ).c_str ( ), "pdf")))
+	if ((0 == strcasecmp (file.getExtension ( ).c_str ( ), "ps")) || (0 == strcasecmp (file.getExtension ( ).c_str ( ), "pdf")))
 		return false;
 
 	return true;
 }	// QwtChartPanel::useQImage
 
 
-void QwtChartPanel::getImageSize (
-							const QPrinter& printer, int& width, int& height)
+void QwtChartPanel::getImageSize (const QPrinter& printer, int& width, int& height)
 {
 /*
 	const int	printerWidth	= printer.width ( );
@@ -1860,15 +1825,13 @@ void QwtChartPanel::setAspectRatio (double ar)
 }	// QwtChartPanel::setAspectRatio
 
 
-QwtPlotCoordinatesPicker::SELECTION_MODE
-									QwtChartPanel::getSelectionMode ( ) const
+QwtPlotCoordinatesPicker::SELECTION_MODE QwtChartPanel::getSelectionMode ( ) const
 {
 	return getCoordinatesPicker ( ).getSelectionMode ( );
 }	// QwtChartPanel::getSelectionMode
 
 
-void QwtChartPanel::setSelectionMode (
-								QwtPlotCoordinatesPicker::SELECTION_MODE mode)
+void QwtChartPanel::setSelectionMode (QwtPlotCoordinatesPicker::SELECTION_MODE mode)
 {
 	getCoordinatesPicker ( ).setSelectionMode (mode);
 }	// QwtChartPanel::setSelectionMode
@@ -1892,22 +1855,19 @@ void QwtChartPanel::clearSelection ( )
 }	// QwtChartPanel::clearSelection
 
 
-void QwtChartPanel::getSelectionArea (
-						double& x1, double& y1, double& x2, double& y2) const
+void QwtChartPanel::getSelectionArea (double& x1, double& y1, double& x2, double& y2) const
 {
 	return getCoordinatesPicker ( ).getSelectionArea (x1, y1, x2, y2);
 }	// QwtChartPanel::getSelectionArea
 
 
-void QwtChartPanel::getSelectionExtrema (
-				double& xmin, double& ymin, double& xmax, double& ymax) const
+void QwtChartPanel::getSelectionExtrema (double& xmin, double& ymin, double& xmax, double& ymax) const
 {
 	return getCoordinatesPicker ( ).getSelectionExtrema(xmin, ymin, xmax, ymax);
 }	// QwtChartPanel::getSelectionExtrema
 
 
-vector<QwtChartPanel::QwtChartEditionPanel*>
-							QwtChartPanel::createEditionPanels (QWidget* parent)
+vector<QwtChartPanel::QwtChartEditionPanel*> QwtChartPanel::createEditionPanels (QWidget* parent)
 {
 	vector<QwtChartPanel::QwtChartEditionPanel*>	panels;
 
@@ -1918,22 +1878,19 @@ vector<QwtChartPanel::QwtChartEditionPanel*>
 }	// QwtChartPanel::createEditionPanels
 
 
-vector<QwtChartPanel::DataPaintAttributes>
-								QwtChartPanel::getDataPaintAttributes ( ) const
+vector<QwtChartPanel::DataPaintAttributes> QwtChartPanel::getDataPaintAttributes ( ) const
 {
 	throw Exception ("QwtChartPanel::getDataPaintAttributes should be verloaded.");
 }	// QwtChartPanel::getDataPaintAttributes
 
 
-void QwtChartPanel::setDataPaintAttributes (
-		size_t index, const QwtChartPanel::DataPaintAttributes& paintAttributes)
+void QwtChartPanel::setDataPaintAttributes (size_t index, const QwtChartPanel::DataPaintAttributes& paintAttributes)
 {
 	throw Exception ("QwtChartPanel::setDataPaintAttributes should be verloaded.");
 }	// QwtChartPanel::setDataPaintAttributes
 
 
-void QwtChartPanel::setSpecificsPanelsCreator (
-										QwtChartSpecificPanelCreator* creator)
+void QwtChartPanel::setSpecificsPanelsCreator (QwtChartSpecificPanelCreator* creator)
 {	
 	delete _specificPanelCreator;
 	_specificPanelCreator	= creator;
@@ -1962,8 +1919,7 @@ void QwtChartPanel::addPlotItem (QwtPlotItem& plotItem)
 {
 	if (0 != getEditionDialog ( ))
 	{
-		QwtExtendedPlotCurve*	curve	=
-							dynamic_cast<QwtExtendedPlotCurve*>(&plotItem);
+		QwtExtendedPlotCurve*	curve	= dynamic_cast<QwtExtendedPlotCurve*>(&plotItem);
 		if (0 != curve)
 			getEditionDialog ( )->curveAdded (curve);
 	}	// if (0 != getEditionDialog ( ))
@@ -1976,8 +1932,7 @@ void QwtChartPanel::addPlotItem (QwtPlotItem& plotItem)
 	QwtLegend*	legend	= dynamic_cast<QwtLegend*>(getPlot ( ).legend ( ));
 	if (0 != legend)
 	{
-		QWidget*	widget	=
-					legend->legendWidget (getPlot ( ).itemToInfo (&plotItem));
+		QWidget*	widget	= legend->legendWidget (getPlot ( ).itemToInfo (&plotItem));
 		QwtLegendLabel*	label	= dynamic_cast<QwtLegendLabel*>(widget);
 		if (0 != label)
 			label->setChecked (plotItem.isVisible ( ));
@@ -1993,8 +1948,7 @@ void QwtChartPanel::removePlotItem (QwtPlotItem& plotItem)
 {
 	if (0 != getEditionDialog ( ))
 	{
-		QwtExtendedPlotCurve*	curve	=
-							dynamic_cast<QwtExtendedPlotCurve*>(&plotItem);
+		QwtExtendedPlotCurve*	curve	= dynamic_cast<QwtExtendedPlotCurve*>(&plotItem);
 		if (0 != curve)
 			getEditionDialog ( )->curveRemoved (curve);
 	}	// if (0 != getEditionDialog ( ))
@@ -2033,8 +1987,7 @@ const QwtPlotCoordinatesPicker& QwtChartPanel::getCoordinatesPicker ( ) const
 void QwtChartPanel::setCoordinatesPicker (QwtPlotCoordinatesPicker& picker)
 {
 	CHECK_NULL_PTR_ERROR (_zoomer)
-	bool	enabled	= 0 == _coordsPicker ?
-					  !_zoomer->isEnabled ( ) : _coordsPicker->isEnabled ( );
+	bool	enabled	= 0 == _coordsPicker ? !_zoomer->isEnabled ( ) : _coordsPicker->isEnabled ( );
 	delete _coordsPicker;
 	_coordsPicker	= &picker;
 	picker.setEnabled (enabled);

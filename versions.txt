@@ -1,6 +1,13 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
+Version 5.3.2 : 24/01/25
+===============
+
+Correctifs affichage des histogrammes dans les cas où l'on ne demande qu'une classe, cela aboutissait à des histogrammes plats,
+sans légende des axes.
+
+
 Version 5.3.1 : 12/01/24
 ===============
 
