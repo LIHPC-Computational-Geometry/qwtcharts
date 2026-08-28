@@ -1,7 +1,7 @@
 set (CURRENT_PACKAGE_NAME "QwtCharts")
 set (CURRENT_PACKAGE_MACRO_NAME "QWT_CHARTS")
 
-find_package (GUIToolkitsVariables)
+find_package (GUIToolkitsVariables 1.7 REQUIRED)
 
 # The FindQwt.cmake file is deployed in GUIToolkitsVariables_CMAKE_DIR
 # that is not the default location => set CMAKE_MODULE_PATH
@@ -12,6 +12,7 @@ include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common_qt.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/utilities.cmake)
 
 find_package (QtUtil 6 REQUIRED)
 find_package(Qt${QT_MAJOR}Core ${QT_MAJOR} NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
@@ -39,6 +40,7 @@ target_link_libraries (QwtCharts PUBLIC QtUtil::QtUtil ${QWT_TARGET})
 # Etre capable une fois installée de retrouver TkUtil, Qt5*, ... :
 # (Rem : en son absence on a Set runtime path of "/tmp/pignerol/install/lib/libQwtCharts.so.5.0.0" to "") ...
 set_target_properties (QwtCharts PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+separate_debug_infos (QwtCharts ${CMAKE_INSTALL_PREFIX}/src)
 
 # Inefficace ici : CMAKE_AUTOMOC => dans le CMakeLists.txt racine
 #set (CMAKE_AUTOMOC ON)

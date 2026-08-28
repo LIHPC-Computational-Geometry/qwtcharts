@@ -1,6 +1,13 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
+Version 5.4.0 : 28/08/26
+===============
+
+Utilisation de la fonction separate_debug_infos de séparations des informations de débogage du binaire
+de GUIToolkitsVariables.
+
+
 Version 5.3.2 : 24/01/25
 ===============
 
