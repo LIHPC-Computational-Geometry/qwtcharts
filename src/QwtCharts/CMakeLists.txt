@@ -15,7 +15,7 @@ include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/utilities.cmake)
 
 find_package (QtUtil 6 REQUIRED)
-find_package(Qt${QT_MAJOR}Core ${QT_MAJOR} NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
+find_package(Qt${QT_MAJOR}Core ${QT_MAJOR} NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PACKAGE_REGISTRY)	# In order to enable moc ...
 
 file (GLOB HEADERS public/${CURRENT_PACKAGE_NAME}/*.h)
 file (GLOB CPP_SOURCES *.cpp *.qrc)
