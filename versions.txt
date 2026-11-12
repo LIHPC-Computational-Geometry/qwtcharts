@@ -1,6 +1,13 @@
 A FAIRE :
 Affichage optionnel des symboles => option dans les panneaux.
 
+Version 5.4.1 : 05/11/26
+===============
+
+Fichiers cmake : remplacement de NO_CMAKE_SYSTEM_PATH par NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PACKAGE_REGISTRY 
+pour Qt (id. GUIToolkitsVariables/cmake/common_qt.cmake).
+
+
 Version 5.4.0 : 28/08/26
 ===============
 
